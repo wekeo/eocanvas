@@ -1,0 +1,148 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <useAdvancedOptions>false</useAdvancedOptions>
+      <file>$img1</file>
+      <copyMetadata>true</copyMetadata>
+      <bandNames>Oa01_reflectance,Oa01_reflectance_err,Oa02_reflectance,Oa02_reflectance_err,Oa03_reflectance,Oa03_reflectance_err,Oa04_reflectance,Oa04_reflectance_err,Oa05_reflectance,Oa05_reflectance_err,Oa06_reflectance,Oa06_reflectance_err,Oa07_reflectance,Oa07_reflectance_err,Oa08_reflectance,Oa08_reflectance_err,Oa09_reflectance,Oa09_reflectance_err,Oa10_reflectance,Oa10_reflectance_err,Oa11_reflectance,Oa11_reflectance_err,Oa12_reflectance,Oa12_reflectance_err,Oa16_reflectance,Oa16_reflectance_err,Oa17_reflectance,Oa17_reflectance_err,Oa18_reflectance,Oa18_reflectance_err,Oa21_reflectance,Oa21_reflectance_err,CHL_NN,CHL_NN_err,CHL_OC4ME,CHL_OC4ME_err,altitude,latitude,longitude,detector_index,FWHM_band_1,FWHM_band_2,FWHM_band_3,FWHM_band_4,FWHM_band_5,FWHM_band_6,FWHM_band_7,FWHM_band_8,FWHM_band_9,FWHM_band_10,FWHM_band_11,FWHM_band_12,FWHM_band_13,FWHM_band_14,FWHM_band_15,FWHM_band_16,FWHM_band_17,FWHM_band_18,FWHM_band_19,FWHM_band_20,FWHM_band_21,frame_offset,lambda0_band_1,lambda0_band_2,lambda0_band_3,lambda0_band_4,lambda0_band_5,lambda0_band_6,lambda0_band_7,lambda0_band_8,lambda0_band_9,lambda0_band_10,lambda0_band_11,lambda0_band_12,lambda0_band_13,lambda0_band_14,lambda0_band_15,lambda0_band_16,lambda0_band_17,lambda0_band_18,lambda0_band_19,lambda0_band_20,lambda0_band_21,solar_flux_band_1,solar_flux_band_2,solar_flux_band_3,solar_flux_band_4,solar_flux_band_5,solar_flux_band_6,solar_flux_band_7,solar_flux_band_8,solar_flux_band_9,solar_flux_band_10,solar_flux_band_11,solar_flux_band_12,solar_flux_band_13,solar_flux_band_14,solar_flux_band_15,solar_flux_band_16,solar_flux_band_17,solar_flux_band_18,solar_flux_band_19,solar_flux_band_20,solar_flux_band_21,ADG443_NN,ADG443_NN_err,IWV,IWV_err,PAR,PAR_err,KD490_M07,KD490_M07_err,TSM_NN,TSM_NN_err,A865,A865_err,T865,T865_err,WQSF_lsb,WQSF_msb</bandNames>
+      <pixelRegion>0,0,4865,4091</pixelRegion>
+      <maskNames>WQSF_lsb_INVALID,WQSF_lsb_WATER,WQSF_lsb_LAND,WQSF_lsb_CLOUD,WQSF_lsb_TURBID_ATM,WQSF_lsb_CLOUD_AMBIGUOUS,WQSF_lsb_CLOUD_MARGIN,WQSF_lsb_SNOW_ICE,WQSF_lsb_INLAND_WATER,WQSF_lsb_COASTLINE,WQSF_lsb_TIDAL,WQSF_lsb_COSMETIC,WQSF_lsb_SUSPECT,WQSF_lsb_HISOLZEN,WQSF_lsb_SATURATED,WQSF_lsb_MEGLINT,WQSF_lsb_HIGHGLINT,WQSF_lsb_WHITECAPS,WQSF_lsb_ADJAC,WQSF_lsb_WV_FAIL,WQSF_lsb_PAR_FAIL,WQSF_lsb_AC_FAIL,WQSF_lsb_OC4ME_FAIL,WQSF_lsb_OCNN_FAIL,WQSF_lsb_KDM_FAIL,WQSF_lsb_BPAC_ON,WQSF_lsb_WHITE_SCATT,WQSF_lsb_LOWRW,WQSF_lsb_HIGHRW,WQSF_msb_ANNOT_ANGSTROM,WQSF_msb_ANNOT_AERO_B,WQSF_msb_ANNOT_ABSO_D,WQSF_msb_ANNOT_ACLIM,WQSF_msb_ANNOT_ABSOA,WQSF_msb_ANNOT_MIXR1,WQSF_msb_ANNOT_DROUT,WQSF_msb_ANNOT_TAU06,WQSF_msb_RWNEG_O1,WQSF_msb_RWNEG_O2,WQSF_msb_RWNEG_O3,WQSF_msb_RWNEG_O4,WQSF_msb_RWNEG_O5,WQSF_msb_RWNEG_O6,WQSF_msb_RWNEG_O7,WQSF_msb_RWNEG_O8,WQSF_msb_RWNEG_O9,WQSF_msb_RWNEG_O10,WQSF_msb_RWNEG_O11,WQSF_msb_RWNEG_O12,WQSF_msb_RWNEG_O16,WQSF_msb_RWNEG_O17,WQSF_msb_RWNEG_O18,WQSF_msb_RWNEG_O21,WQSF_REFLECTANCE_RECOM,WQSF_CHL_OC4ME_RECOM,WQSF_KD490_M07_RECOM,WQSF_PAR_RECOM,WQSF_W_AER_RECOM,WQSF_CHL_NN_RECOM,WQSF_TSM_NN_RECOM,WQSF_ADG443_NN_RECOM,WQSF_IWV_RECOM</maskNames>
+    </parameters>
+  </node>
+  <node id="BandMathsNN">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>Filtered_CHL_NN</name>
+          <type>float32</type>
+          <expression>if WQSF_lsb_LAND or WQSF_lsb_CLOUD or WQSF_lsb_CLOUD_AMBIGUOUS or WQSF_lsb_CLOUD_MARGIN or WQSF_lsb_INVALID or WQSF_lsb_COSMETIC or WQSF_lsb_SATURATED or WQSF_lsb_SUSPECT or WQSF_lsb_HISOLZEN or WQSF_lsb_HIGHGLINT or WQSF_lsb_SNOW_ICE or WQSF_lsb_OCNN_FAIL then NaN else CHL_NN</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="BandMathsOC4ME">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>Filtered_CHL_OC4ME</name>
+          <type>float32</type>
+          <expression>if WQSF_lsb_LAND or WQSF_lsb_CLOUD or WQSF_lsb_CLOUD_AMBIGUOUS or WQSF_lsb_CLOUD_MARGIN or WQSF_lsb_INVALID or WQSF_lsb_COSMETIC or WQSF_lsb_SATURATED or WQSF_lsb_SUSPECT or WQSF_lsb_HISOLZEN or WQSF_lsb_HIGHGLINT or WQSF_lsb_SNOW_ICE or WQSF_lsb_AC_FAIL or WQSF_lsb_WHITECAPS or WQSF_lsb_ADJAC or WQSF_msb_RWNEG_O2 or WQSF_msb_RWNEG_O3 or WQSF_msb_RWNEG_O4 or WQSF_msb_RWNEG_O5 or WQSF_msb_RWNEG_O6 or WQSF_msb_RWNEG_O7 or WQSF_msb_RWNEG_O8 or WQSF_lsb_OC4ME_FAIL then NaN else CHL_OC4ME</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="BandMerge">
+    <operator>BandMerge</operator>
+    <sources>
+      <sourceProduct refid="BandMathsOC4ME"/>
+      <sourceProduct.1 refid="BandMathsNN"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands/>
+      <geographicError>1.0E-5</geographicError>
+    </parameters>
+  </node>
+  <node id="Reproject">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+      <resampling>Nearest</resampling>
+      <referencePixelX/>
+      <referencePixelY/>
+      <easting/>
+      <northing/>
+      <orientation/>
+      <pixelSizeX/>
+      <pixelSizeY/>
+      <width/>
+      <height/>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue>NaN</noDataValue>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Subset">
+    <operator>Subset</operator>
+    <sources>
+      <sourceProduct refid="BandMerge"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands>longitude,latitude,Filtered_CHL_OC4ME,Filtered_CHL_NN,longitude_2,latitude_2</sourceBands>
+      <tiePointGrids/>
+      <region>0,0,0,0</region>
+      <referenceBand/>
+      <geoRegion>POLYGON ((20 58, 21 58, 21 59, 20 59, 20 58, 20 58))</geoRegion>
+      <subSamplingX>1</subSamplingX>
+      <subSamplingY>1</subSamplingY>
+      <fullSwath>false</fullSwath>
+      <copyMetadata>true</copyMetadata>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Reproject"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>$output</file>
+      <formatName>NetCDF4-BEAM</formatName>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+            <displayPosition x="47.0" y="33.0"/>
+    </node>
+    <node id="BandMathsNN">
+      <displayPosition x="164.0" y="92.0"/>
+    </node>
+    <node id="BandMathsOC4ME">
+      <displayPosition x="225.0" y="19.0"/>
+    </node>
+    <node id="BandMerge">
+      <displayPosition x="284.0" y="215.0"/>
+    </node>
+    <node id="Reproject">
+      <displayPosition x="343.0" y="117.0"/>
+    </node>
+    <node id="Subset">
+      <displayPosition x="417.0" y="221.0"/>
+    </node>
+    <node id="Write">
+            <displayPosition x="455.0" y="135.0"/>
+    </node>
+  </applicationData>
+</graph>

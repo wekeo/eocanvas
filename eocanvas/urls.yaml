@@ -1,0 +1,11 @@
+token_url: https://gateway.impl.wekeo2.eu/hda-broker/gettoken
+base_url: https://gateway.impl.wekeo2.eu/serverless
+endpoints:
+  process_list: /processes
+  process_detail: /processes/{process_id}
+  process_execution: /processes/{process_id}/execution
+  job_list: /jobs
+  job_detail: /jobs/{job_id}
+  job_logs: /jobs/{job_id}/logs
+  job_results: /jobs/{job_id}/results
+  download: "{result_href}"

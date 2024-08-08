@@ -1,0 +1,2300 @@
+AATSR.Ungrid:
+  desc: Ungrids (A)ATSR L1B products and extracts geolocation and pixel field of view data.
+  params:
+    L1BCharacterisationFile: null
+    cornerReferenceFlag: 'true'
+    topographicFlag: 'false'
+    topographyHomogenity: '0.05'
+ALOS-Deskewing:
+  desc: Deskewing ALOS product
+  params:
+    demName: SRTM 3Sec
+    sourceBandNames: null
+Aatsr.SST:
+  desc: Computes sea surface temperature (SST) from (A)ATSR products.
+  params:
+    dual: 'true'
+    dualCoefficientsFile: AVERAGE_POLAR_DUAL_VIEW
+    dualMaskExpression: '!cloud_flags_nadir.LAND and !cloud_flags_nadir.CLOUDY and !cloud_flags_nadir.SUN_GLINT and !cloud_flags_fward.LAND and !cloud_flags_fward.CLOUDY and !cloud_flags_fward.SUN_GLINT'
+    invalidSstValue: -999.0f
+    nadir: 'true'
+    nadirCoefficientsFile: AVERAGE_POLAR_SINGLE_VIEW
+    nadirMaskExpression: '!cloud_flags_nadir.LAND and !cloud_flags_nadir.CLOUDY and !cloud_flags_nadir.SUN_GLINT'
+AdaptiveThresholding:
+  desc: Detect ships using Constant False Alarm Rate detector.
+  params:
+    backgroundWindowSizeInMeter: '800.0'
+    estimateBackground: 'false'
+    guardWindowSizeInMeter: '500.0'
+    pfa: '6.5'
+    targetWindowSizeInMeter: '50'
+AddElevation:
+  desc: Creates a DEM band
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BICUBIC_INTERPOLATION
+    elevationBandName: elevation
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+AddLandCover:
+  desc: Creates a land cover band
+  params:
+    externalFiles: null
+    landCoverNames: AAFC Canada Sand Pct
+    resamplingMethod: NEAREST_NEIGHBOUR
+Apply-Orbit-File:
+  desc: Apply orbit file
+  params:
+    continueOnFail: 'false'
+    orbitType: Sentinel Precise (Auto Download)
+    polyDegree: '3'
+Arc.SST:
+  desc: Computes sea surface temperature (SST) from (A)ATSR and SLSTR products.
+  params:
+    asdi: 'true'
+    asdiCoefficientsFile: ASDI_AATSR
+    asdiMaskExpression: null
+    dual: 'true'
+    dualCoefficientsFile: ARC_D2_AATSR
+    dualMaskExpression: null
+    invalidSstValue: -999.0f
+    nadir: 'true'
+    nadirCoefficientsFile: ARC_N2_AATSR
+    nadirMaskExpression: null
+    tcwvExpression: '30.0'
+ArviOp:
+  desc: Atmospherically Resistant Vegetation Index belongs to a family of indices with built-in atmospheric corrections.
+  params:
+    blueFactor: 1.0F
+    blueSourceBand: null
+    downsamplingMethod: First
+    gammaParameter: 1.0F
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Azimuth-Shift-Estimation-ESD:
+  desc: Estimate azimuth offset for the whole image
+  params:
+    cohThreshold: '0.15'
+    numBlocksPerOverlap: '10'
+AzimuthFilter:
+  desc: Azimuth Filter
+  params:
+    alphaHamming: '0.75'
+    aziFilterOverlap: '0'
+    fftLength: '256'
+Back-Geocoding:
+  desc: Bursts co-registration using orbit and DEM
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BICUBIC_INTERPOLATION
+    disableReramp: 'false'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    maskOutAreaWithoutElevation: 'true'
+    outputDerampDemodPhase: 'false'
+    outputRangeAzimuthOffset: 'false'
+    resamplingType: BISINC_5_POINT_INTERPOLATION
+BandMaths:
+  desc: Create a product with one or more bands using mathematical expressions.
+  params:
+    targetBandDescriptors: null
+    variables: null
+BandMerge:
+  desc: Allows copying raster data from any number of source products to a specified 'master' product.
+  params:
+    geographicError: 1.0E-5f
+    sourceBandNames: null
+BandSelect:
+  desc: Creates a new product with only selected bands
+  params:
+    bandNamePattern: null
+    selectedPolarisations: null
+    sourceBandNames: null
+BandsDifferenceOp:
+  desc: null
+  params: {}
+BandsExtractorOp:
+  desc: Creates a new product out of the source product containing only the indexes bands given
+  params:
+    sourceBandNames: null
+    sourceMaskNames: null
+Bi2Op:
+  desc: The Brightness index represents the average of the brightness of a satellite image. This index is sensitive to the brightness of soils which is highly correlated with the humidity and the presence of salts in surface
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+BiOp:
+  desc: The Brightness index represents the average of the brightness of a satellite image.
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Binning:
+  desc: Performs spatial and temporal aggregation of pixel values into cells ('bins') of a planetary grid
+  params:
+    aggregatorConfigs: null
+    bandConfigurations: null
+    maskExpr: null
+    maxDistanceOnEarth: '-1'
+    metadataAggregatorName: NAME
+    metadataPropertiesFile: ./metadata.properties
+    metadataTemplateDir: .
+    minDataHour: null
+    numRows: '2160'
+    outputBinnedData: 'false'
+    outputFile: null
+    outputFormat: BEAM-DIMAP
+    outputTargetProduct: 'true'
+    outputType: Product
+    periodDuration: null
+    planetaryGridClass: org.esa.snap.binning.support.SEAGrid
+    postProcessorConfig: null
+    productCustomizerConfig: null
+    region: null
+    sourceGraphPaths: null
+    sourceProductFormat: null
+    sourceProductPaths: null
+    startDateTime: null
+    superSampling: '1'
+    timeFilterMethod: NONE
+    variableConfigs: null
+Biophysical10mOp:
+  desc: The 'Biophysical Processor' operator retrieves LAI from atmospherically corrected Sentinel-2 products
+  params:
+    computeFapar: 'true'
+    computeFcover: 'true'
+    computeLAI: 'true'
+    sensor: S2A_10m
+BiophysicalLandsat8Op:
+  desc: The 'Biophysical Processor' operator retrieves LAI from atmospherically corrected Landsat8 products
+  params:
+    computeFapar: 'true'
+    computeFcover: 'true'
+    computeLAI: 'true'
+BiophysicalOp:
+  desc: The 'Biophysical Processor' operator retrieves LAI from atmospherically corrected Sentinel-2 products
+  params:
+    computeCab: 'true'
+    computeCw: 'true'
+    computeFapar: 'true'
+    computeFcover: 'true'
+    computeLAI: 'true'
+    sensor: S2A
+CP-Decomposition:
+  desc: Perform Compact Polarimetric decomposition of a given product
+  params:
+    computeAlphaByT3: 'true'
+    decomposition: M-Chi Decomposition
+    outputRVOG: 'true'
+    windowSizeXStr: '5'
+    windowSizeYStr: '5'
+CP-Simulation:
+  desc: Simulation of Compact Pol data from Quad Pol data
+  params:
+    compactMode: Right Circular Hybrid Mode
+    noisePower: '-25'
+    outputFormat: Covariance Matrix C2
+    simulateNoiseFloor: 'false'
+CP-Stokes-Parameters:
+  desc: Generates compact polarimetric Stokes child parameters
+  params:
+    outputAlphas: 'true'
+    outputCPR: 'true'
+    outputConformity: 'true'
+    outputDegreeOfCircularity: 'true'
+    outputDegreeOfDepolarization: 'true'
+    outputDegreeOfEllipticity: 'true'
+    outputDegreeOfPolarization: 'true'
+    outputLPR: 'true'
+    outputPhasePhi: 'true'
+    outputRelativePhase: 'true'
+    outputStokesVector: 'false'
+    windowSizeXStr: '5'
+    windowSizeYStr: '5'
+Calibration:
+  desc: Calibration of products
+  params:
+    auxFile: Latest Auxiliary File
+    createBetaBand: 'false'
+    createGammaBand: 'false'
+    externalAuxFile: null
+    outputBetaBand: 'false'
+    outputGammaBand: 'false'
+    outputImageInComplex: 'false'
+    outputImageScaleInDb: 'false'
+    outputSigmaBand: 'true'
+    selectedPolarisations: null
+    sourceBandNames: null
+Change-Detection:
+  desc: Change Detection.
+  params:
+    includeSourceBands: 'false'
+    maskLowerThreshold: '-2.0'
+    maskUpperThreshold: '2.0'
+    outputLogRatio: 'false'
+    sourceBandNames: null
+CiOp:
+  desc: "Colour Index  was developed to differentiate soils in the field.\nIn most cases the CI gives complementary information with the BI and the NDVI.\n Used for diachronic analyses, they help for a better understanding of the evolution of soil surfaces."
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+CloudProb:
+  desc: Applies a clear sky conservative cloud detection algorithm.
+  params: {}
+Coherence:
+  desc: Estimate coherence from stack of coregistered images
+  params:
+    cohWinAz: '10'
+    cohWinRg: '10'
+    demName: SRTM 3Sec
+    externalDEMApplyEGM: 'true'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    orbitDegree: '3'
+    singleMaster: 'true'
+    squarePixel: 'true'
+    srpNumberPoints: '501'
+    srpPolynomialDegree: '5'
+    subtractFlatEarthPhase: 'false'
+    subtractTopographicPhase: 'false'
+    tileExtensionPercent: '100'
+Collocate:
+  desc: Collocates two products based on their geo-codings.
+  params:
+    masterComponentPattern: ${ORIGINAL_NAME}_M
+    masterProductName: null
+    renameMasterComponents: 'true'
+    renameSlaveComponents: 'true'
+    resamplingType: NEAREST_NEIGHBOUR
+    slaveComponentPattern: ${ORIGINAL_NAME}_S${SLAVE_NUMBER_ID}
+    sourceProductPaths: null
+    targetProductName: _collocated
+    targetProductType: COLLOCATED
+Compactpol-Radar-Vegetation-Index:
+  desc: Compact-pol Radar Vegetation Indices generation
+  params:
+    windowSize: '5'
+Compute-Slope-Aspect:
+  desc: Compute Slope and Aspect from DEM
+  params:
+    demBandName: elevation
+    demName: SRTM 1Sec HGT
+    demResamplingMethod: BILINEAR_INTERPOLATION
+    externalDEMApplyEGM: 'false'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+Convert-Datatype:
+  desc: Convert product data type
+  params:
+    sourceBandNames: null
+    targetDataType: uint8
+    targetNoDataValue: '0'
+    targetScalingStr: Linear (between 95% clipped histogram)
+CoregistrationOp:
+  desc: Coregisters two rasters, not considering their location
+  params:
+    iterations: '2'
+    levels: '6'
+    masterSourceBand: null
+    radius: 32, 28, 24, 20, 16, 12, 8
+    rank: '4'
+    slaveSourceBand: null
+CreateStack:
+  desc: Collocates two or more products based on their geo-codings.
+  params:
+    extent: Master
+    initialOffsetMethod: Orbit
+    masterBandNames: null
+    resamplingType: NONE
+    slaveBandNames: null
+Cross-Channel-SNR-Correction:
+  desc: Compute general polarimetric parameters
+  params:
+    windowSize: '5'
+Cross-Correlation:
+  desc: Automatic Selection of Ground Control Points
+  params:
+    applyFineRegistration: 'false'
+    coarseRegistrationWindowHeight: '128'
+    coarseRegistrationWindowWidth: '128'
+    coherenceThreshold: '0.6'
+    coherenceWindowSize: '3'
+    columnInterpFactor: '2'
+    computeOffset: 'false'
+    fineRegistrationOversampling: '16'
+    fineRegistrationWindowAccAzimuth: '16'
+    fineRegistrationWindowAccRange: '16'
+    fineRegistrationWindowHeight: '32'
+    fineRegistrationWindowWidth: '32'
+    gcpTolerance: '0.5'
+    inSAROptimized: 'false'
+    maxIteration: '10'
+    numGCPtoGenerate: '2000'
+    onlyGCPsOnLand: 'false'
+    rowInterpFactor: '2'
+    useSlidingWindow: 'false'
+CrossResampling:
+  desc: Estimate Resampling Polynomial using SAR Image Geometry, and Resample Input Images
+  params:
+    interpolationMethod: Cubic convolution (6 points)
+    targetGeometry: ERS
+    warpPolynomialOrder: '2'
+DEM-Assisted-Coregistration:
+  desc: Orbit and DEM based co-registration
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BICUBIC_INTERPOLATION
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    maskOutAreaWithoutElevation: 'true'
+    outputRangeAzimuthOffset: 'false'
+    resamplingType: BISINC_5_POINT_INTERPOLATION
+    tileExtensionPercent: '50'
+Data-Analysis:
+  desc: Computes statistics
+  params: {}
+DeburstWSS:
+  desc: Debursts an ASAR WSS product
+  params:
+    average: 'false'
+    produceIntensitiesOnly: 'false'
+    subSwath: SS1
+DecisionTree:
+  desc: Perform decision tree classification
+  params:
+    decisionTree: null
+Demodulate:
+  desc: Demodulation and deramping of SLC data
+  params: {}
+Double-Difference-Interferogram:
+  desc: Compute double difference interferogram
+  params:
+    cohWinSize: '5'
+    outputCoherence: 'false'
+DviOp:
+  desc: Difference Vegetation Index retrieves the Isovegetation lines parallel to soil line
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+EAP-Phase-Correction:
+  desc: EAP Phase Correction
+  params: {}
+EMClusterAnalysis:
+  desc: Performs an expectation-maximization (EM) cluster analysis.
+  params:
+    clusterCount: '14'
+    includeProbabilityBands: 'false'
+    iterationCount: '30'
+    randomSeed: '31415'
+    roiMaskName: null
+    sourceBandNames: null
+Ellipsoid-Correction-GG:
+  desc: GG method for orthorectification
+  params:
+    imgResamplingMethod: BILINEAR_INTERPOLATION
+    mapProjection: WGS84(DD)
+    sourceBandNames: null
+Ellipsoid-Correction-RD:
+  desc: Ellipsoid correction with RD method and average scene height
+  params:
+    alignToStandardGrid: 'false'
+    applyRadiometricNormalization: 'false'
+    auxFile: Latest Auxiliary File
+    demName: SRTM 3Sec
+    demResamplingMethod: BILINEAR_INTERPOLATION
+    externalAuxFile: null
+    externalDEMApplyEGM: 'true'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    imgResamplingMethod: BILINEAR_INTERPOLATION
+    incidenceAngleForGamma0: Use projected local incidence angle from DEM
+    incidenceAngleForSigma0: Use projected local incidence angle from DEM
+    mapProjection: WGS84(DD)
+    nodataValueAtSea: 'true'
+    pixelSpacingInDegree: '0'
+    pixelSpacingInMeter: '0'
+    saveBetaNought: 'false'
+    saveDEM: 'false'
+    saveGammaNought: 'false'
+    saveIncidenceAngleFromEllipsoid: 'false'
+    saveLatLon: 'false'
+    saveLayoverShadowMask: 'false'
+    saveLocalIncidenceAngle: 'false'
+    saveProjectedLocalIncidenceAngle: 'false'
+    saveSelectedSourceBand: 'true'
+    saveSigmaNought: 'false'
+    sourceBandNames: null
+    standardGridOriginX: '0'
+    standardGridOriginY: '0'
+Enhanced-Spectral-Diversity:
+  desc: Estimate constant range and azimuth offsets for a stack of images
+  params:
+    cohThreshold: '0.3'
+    doNotWriteTargetBands: 'false'
+    esdEstimator: Periodogram
+    fineWinAccAzimuth: '16'
+    fineWinAccRange: '16'
+    fineWinHeightStr: '512'
+    fineWinOversampling: '128'
+    fineWinWidthStr: '512'
+    integrationMethod: L1 and L2
+    maxTemporalBaseline: '4'
+    numBlocksPerOverlap: '10'
+    overallAzimuthShift: '0.0'
+    overallRangeShift: '0.0'
+    temporalBaselineType: Number of images
+    useSuppliedAzimuthShift: 'false'
+    useSuppliedRangeShift: 'false'
+    weightFunc: Inv Quadratic
+    xCorrThreshold: '0.1'
+FUB.Water:
+  desc: FUB/WeW WATER Processor to retrieve case II water properties and atmospheric properties
+  params:
+    checkWhetherSuspectIsValid: 'true'
+    computeAtmCorr: 'true'
+    computeCHL: 'true'
+    computeTSM: 'true'
+    computeYS: 'true'
+    expression: not l1_flags.GLINT_RISK and not l1_flags.BRIGHT and not l1_flags.INVALID and not l1_flags.SUSPECT
+Faraday-Rotation-Correction:
+  desc: Perform Faraday-rotation correction for quad-pol product
+  params:
+    windowSize: '10'
+Fill-DEM-Hole:
+  desc: Fill holes in given DEM product file.
+  params:
+    NoDataValue: '0.0'
+    sourceBands: null
+FillAerosol:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+FillBand:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Find-Image-Pair:
+  desc: DB query to find matching image pair
+  params:
+    maxMJD: '99999'
+    minMJD: '1'
+FlhMci:
+  desc: Computes fluorescence line height (FLH) or maximum chlorophyll index (MCI).
+  params:
+    cloudCorrectionFactor: '1.005'
+    invalidFlhMciValue: NaN
+    lineHeightBandName: null
+    lowerBaselineBandName: null
+    maskExpression: null
+    preset: NONE
+    signalBandName: null
+    slope: 'true'
+    slopeBandName: null
+    upperBaselineBandName: null
+Flip:
+  desc: flips a product horizontal/vertical
+  params:
+    flipType: Vertical
+    sourceBandNames: null
+Flood-Detection:
+  desc: Detect flooded area.
+  params: {}
+Forest-Area-Classification:
+  desc: Detect forest area
+  params:
+    convergenceThreshold: '95'
+    maxIterations: '10'
+    numClasses: '3'
+    sourceBandNames: null
+Forest-Area-Detection:
+  desc: Detect forest area.
+  params:
+    T_Ratio_High: '6.55'
+    T_Ratio_Low: '3.76'
+    denominatorBandName: null
+    nominatorBandName: null
+    windowSizeStr: 3x3
+ForestCoverChangeOp:
+  desc: Creates forest change masks out of two source products
+  params:
+    currentProductSourceMaskFile: null
+    degreesOfFreedom: '3.3'
+    forestCoverPercentage: '95.0'
+    landCoverMapIndices: 40, 50, 60, 61, 62, 70, 71, 72, 80, 81, 82, 90, 100, 110, 160, 170
+    landCoverName: CCILandCover-2015
+    mergingCostCriterion: Spring
+    previousProductSourceMaskFile: null
+    regionMergingCriterion: Local Mutual Best Fitting
+    shapeWeight: '0.5'
+    spectralWeight: '0.5'
+    threshold: '5.0'
+    totalIterationsForSecondSegmentation: '10'
+FuClassification:
+  desc: Colour classification based on the discrete Forel-Ule scale
+  params:
+    copyAllSourceBands: 'false'
+    includeDominantLambda: 'false'
+    includeIntermediateResults: 'true'
+    inputIsIrradianceReflectance: 'false'
+    instrument: AUTO_DETECT
+    reflectanceNamePattern: null
+    validExpression: null
+GLCM:
+  desc: Extract Texture Features
+  params:
+    angleStr: ALL
+    displacement: '4'
+    noDataValue: '-9999.0'
+    outputASM: 'true'
+    outputContrast: 'true'
+    outputCorrelation: 'true'
+    outputDissimilarity: 'true'
+    outputEnergy: 'true'
+    outputEntropy: 'true'
+    outputHomogeneity: 'true'
+    outputMAX: 'true'
+    outputMean: 'true'
+    outputVariance: 'true'
+    quantizationLevelsStr: '32'
+    quantizerStr: Probabilistic Quantizer
+    sourceBands: null
+    windowSizeStr: 9x9
+GRD-Post:
+  desc: Applies GRD post-processing
+  params: {}
+GaborFilter:
+  desc: Extract Texture Features
+  params:
+    sourceBandNames: null
+    theta: null
+GaseousAbsorption:
+  desc: Correct the influence of atmospheric gas absorption for those OLCI channels.
+  params: {}
+GemiOp:
+  desc: This retrieves the Global Environmental Monitoring Index (GEMI).
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Generalized-Radar-Vegetation-Index:
+  desc: Generalized Radar Vegetation Indices generation
+  params:
+    windowSize: '5'
+GenericRegionMergingOp:
+  desc: The 'Generic Region Merging' operator computes the distinct regions from a product
+  params:
+    mergingCostCriterion: Baatz & Schape
+    regionMergingCriterion: Local Mutual Best Fitting
+    shapeWeight: '0.5'
+    sourceBandNames: null
+    spectralWeight: '0.5'
+    threshold: '100.0'
+    totalIterationsForSecondSegmentation: '50'
+GndviOp:
+  desc: Green Normalized Difference Vegetation Index
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    nirFactor: 1.0F
+    nirSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+GoldsteinPhaseFiltering:
+  desc: Phase Filtering
+  params:
+    FFTSizeString: '64'
+    alpha: '1.0'
+    coherenceThreshold: '0.2'
+    useCoherenceMask: 'false'
+    windowSizeString: '3'
+IEM-Hybrid-Inversion:
+  desc: Performs IEM inversion using Hybrid approach
+  params:
+    M: '5'
+    N: '5'
+    doRemainingOutliersFilter: 'true'
+    lutFile: null
+    outputCL: 'false'
+    outputRMS: 'false'
+    thresholdRDC: '0.5'
+IEM-Multi-Angle-Inversion:
+  desc: Performs IEM inversion using Multi-angle approach
+  params:
+    M: '5'
+    N: '5'
+    doRemainingOutliersFilter: 'true'
+    lutFile: null
+    outputRMS: 'false'
+    sigmaPol: HH1-HH2
+    thresholdRDC: '0.5'
+IEM-Multi-Pol-Inversion:
+  desc: Performs IEM inversion using Multi-polarization approach
+  params:
+    M: '5'
+    N: '5'
+    doRemainingOutliersFilter: 'true'
+    lutFile: null
+    outputRMS: 'false'
+    thresholdRDC: '0.5'
+Image-Filter:
+  desc: Common Image Processing Filters
+  params:
+    selectedFilterName: null
+    sourceBandNames: null
+    userDefinedKernelFile: null
+Import-Vector:
+  desc: Imports a shape file into a product
+  params:
+    separateShapes: 'true'
+    vectorFile: null
+IntegerInterferogram:
+  desc: Create integer interferogram
+  params: {}
+Interferogram:
+  desc: Compute interferograms from stack of coregistered S-1 images
+  params:
+    cohWinAz: '10'
+    cohWinRg: '10'
+    demName: SRTM 3Sec
+    externalDEMApplyEGM: 'true'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    includeCoherence: 'true'
+    orbitDegree: '3'
+    outputElevation: 'false'
+    outputLatLon: 'false'
+    squarePixel: 'true'
+    srpNumberPoints: '501'
+    srpPolynomialDegree: '5'
+    subtractFlatEarthPhase: 'true'
+    subtractTopographicPhase: 'false'
+    tileExtensionPercent: '100'
+IpviOp:
+  desc: Infrared Percentage Vegetation Index retrieves the Isovegetation lines converge at origin
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+IreciOp:
+  desc: Inverted red-edge chlorophyll index
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redB4Factor: 1.0F
+    redB5Factor: 1.0F
+    redB6Factor: 1.0F
+    redSourceBand4: null
+    redSourceBand5: null
+    redSourceBand6: null
+    resampleType: None
+    upsamplingMethod: Nearest
+KDTree-KNN-Classifier:
+  desc: KDTree KNN classifier
+  params:
+    classLevels: '101'
+    classValStepSize: '5.0'
+    doClassValQuantization: 'true'
+    doLoadClassifier: 'false'
+    evaluateClassifier: null
+    evaluateFeaturePowerSet: 'false'
+    featureBands: null
+    labelSource: null
+    maxPowerSetSize: '7'
+    minClassValue: '0.0'
+    minPowerSetSize: '2'
+    numNeighbours: '5'
+    numTrainSamples: '5000'
+    savedClassifierName: null
+    trainOnRaster: 'true'
+    trainingBands: null
+    trainingVectors: null
+KMeansClusterAnalysis:
+  desc: Performs a K-Means cluster analysis.
+  params:
+    clusterCount: '14'
+    iterationCount: '30'
+    randomSeed: '31415'
+    roiMaskName: null
+    sourceBandNames: null
+KNN-Classifier:
+  desc: K-Nearest Neighbour classifier
+  params:
+    classLevels: '101'
+    classValStepSize: '5.0'
+    doClassValQuantization: 'true'
+    doLoadClassifier: 'false'
+    evaluateClassifier: null
+    evaluateFeaturePowerSet: 'false'
+    featureBands: null
+    labelSource: null
+    maxPowerSetSize: '7'
+    minClassValue: '0.0'
+    minPowerSetSize: '2'
+    numNeighbours: '5'
+    numTrainSamples: '5000'
+    savedClassifierName: null
+    trainOnRaster: 'true'
+    trainingBands: null
+    trainingVectors: null
+L3ToL1:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+    maskBand: null
+Land-Cover-Mask:
+  desc: Perform decision tree classification
+  params:
+    includeOtherBands: 'false'
+    landCoverBand: null
+    sourceBandNames: null
+    validLandCoverClasses: null
+    validPixelExpression: null
+Land-Sea-Mask:
+  desc: Creates a bitmask defining land vs ocean.
+  params:
+    geometry: null
+    invertGeometry: 'false'
+    landMask: 'true'
+    shorelineExtension: '0'
+    sourceBandNames: null
+    useSRTM: 'true'
+LandWaterMask:
+  desc: Operator creating a target product with a single band containing a land/water-mask.
+  params:
+    resolution: '50'
+    subSamplingFactorX: '1'
+    subSamplingFactorY: '1'
+LinearToFromdB:
+  desc: Converts bands to/from dB
+  params:
+    sourceBandNames: null
+Maximum-Likelihood-Classifier:
+  desc: Maximum Likelihood classifier
+  params:
+    classLevels: '101'
+    classValStepSize: '5.0'
+    doClassValQuantization: 'true'
+    doLoadClassifier: 'false'
+    evaluateClassifier: null
+    evaluateFeaturePowerSet: 'false'
+    featureBands: null
+    labelSource: null
+    maxPowerSetSize: '7'
+    minClassValue: '0.0'
+    minPowerSetSize: '2'
+    numTrainSamples: '5000'
+    savedClassifierName: null
+    trainOnRaster: 'true'
+    trainingBands: null
+    trainingVectors: null
+McariOp:
+  desc: Modified Chlorophyll Absorption Ratio Index, developed to be responsive to chlorophyll variation
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    red1Factor: 1.0F
+    red1SourceBand: null
+    red2Factor: 1.0F
+    red2SourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Mci.s2:
+  desc: Computes maximum chlorophyll index (MCI) for Sentinel-2 MSI.
+  params:
+    cloudCorrectionFactor: '1.005'
+    invalidMciValue: NaN
+    lineHeightBandName: null
+    lowerBaselineBandName: null
+    maskExpression: null
+    signalBandName: null
+    slope: 'true'
+    slopeBandName: null
+    upperBaselineBandName: null
+Merge:
+  desc: Allows merging of several source products by using specified 'master' as reference product.
+  params:
+    excludes: null
+    geographicError: 1.0E-5f
+    includes: null
+Meris.AerosolMerger:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Meris.BlueBand:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Meris.Brr:
+  desc: Performs the Rayleigh correction on a MERIS L1b product.
+  params:
+    copyAllTiePoints: 'true'
+    copyL1Flags: 'true'
+    correctionSurface: ALL_SURFACES
+    outputToar: 'false'
+Meris.CloudClassification:
+  desc: MERIS L2 cloud classification.
+  params:
+    copyAllTiePoints: 'false'
+    l2CloudDetection: 'true'
+    l2Pressures: 'true'
+Meris.CloudProbability:
+  desc: null
+  params:
+    configFile: null
+    copyAllTiePoints: 'false'
+    validLandExpression: null
+    validOceanExpression: null
+Meris.CloudShadow:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+    shadowWidth: null
+Meris.CloudTopPressureOp:
+  desc: Computes cloud top pressure with FUB NN.
+  params:
+    copyAllTiePoints: 'false'
+    straylightCorr: 'false'
+Meris.CombinedCloud:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Meris.CorrectRadiometry:
+  desc: Performs radiometric corrections on MERIS L1b data products.
+  params:
+    doCalibration: 'true'
+    doEqualization: 'true'
+    doRadToRefl: 'false'
+    doSmile: 'true'
+    reproVersion: AUTO_DETECT
+    sourceRacFile: null
+    targetRacFile: null
+Meris.GapLessSdr:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Meris.GaseousCorrection:
+  desc: MERIS L2 gaseous absorbtion correction.
+  params:
+    copyAllTiePoints: 'false'
+    correctWater: null
+    exportTg: null
+Meris.LandClassification:
+  desc: MERIS L2 land/water reclassification.
+  params:
+    copyAllTiePoints: 'false'
+Meris.Mod08Aerosol:
+  desc: null
+  params:
+    auxdataDir: null
+    copyAllTiePoints: 'false'
+Meris.N1Patcher:
+  desc: Copies an existing N1 file and replaces the data for the radiance bands
+  params:
+    copyAllTiePoints: 'false'
+    patchedFile: null
+Meris.RayleighCorrection:
+  desc: MERIS L2 rayleigh correction.
+  params:
+    copyAllTiePoints: 'false'
+    correctWater: null
+    exportRayCoeffs: null
+    exportRhoR: null
+Meris.Sdr:
+  desc: null
+  params:
+    angName: null
+    angValue: null
+    aot470Name: null
+    copyAllTiePoints: 'false'
+    neuralNetFile: null
+    validBandName: null
+Meris.SmileCorrection:
+  desc: null
+  params:
+    copyAllTiePoints: 'false'
+Minimum-Distance-Classifier:
+  desc: Minimum Distance classifier
+  params:
+    classLevels: '101'
+    classValStepSize: '5.0'
+    doClassValQuantization: 'true'
+    doLoadClassifier: 'false'
+    evaluateClassifier: null
+    evaluateFeaturePowerSet: 'false'
+    featureBands: null
+    labelSource: null
+    maxPowerSetSize: '7'
+    minClassValue: '0.0'
+    minPowerSetSize: '2'
+    numTrainSamples: '5000'
+    savedClassifierName: null
+    trainOnRaster: 'true'
+    trainingBands: null
+    trainingVectors: null
+MndwiOp:
+  desc: Modified Normalized Difference Water Index, allowing for the measurement of surface water extent
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    mirFactor: 1.0F
+    mirSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+MoreThenAnIntegerOp:
+  desc: just for testing
+  params: {}
+Mosaic:
+  desc: Creates a mosaic out of a set of source products.
+  params:
+    combine: OR
+    conditions: null
+    crs: EPSG:4326
+    eastBound: '30.0'
+    elevationModelName: null
+    northBound: '75.0'
+    orthorectify: 'false'
+    pixelSizeX: '0.05'
+    pixelSizeY: '0.05'
+    resamplingName: Nearest
+    southBound: '35.0'
+    variables: null
+    westBound: '-15.0'
+MphChl:
+  desc: This operator computes maximum peak height of chlorophyll (MPH/CHL).
+  params:
+    applyLowPassFilter: 'false'
+    chlThreshForFloatFlag: '500.0'
+    cyanoMaxValue: '1000.0'
+    exportMph: 'false'
+    validPixelExpression: null
+MphChlBasis:
+  desc: Computes maximum peak height of chlorophyll. Basis class, contains sensor-independent parts.
+  params:
+    chlThreshForFloatFlag: '350.0'
+    cyanoMaxValue: '1000.0'
+    exportMph: 'false'
+    validPixelExpression: null
+MphChlMeris:
+  desc: Computes maximum peak height of chlorophyll for MERIS. Implements MERIS-specific parts.
+  params:
+    chlThreshForFloatFlag: '350.0'
+    cyanoMaxValue: '1000.0'
+    exportMph: 'false'
+    validPixelExpression: null
+MphChlOlci:
+  desc: Computes maximum peak height of chlorophyll for OLCI. Implements OLCI-specific parts.
+  params:
+    chlThreshForFloatFlag: '350.0'
+    cyanoMaxValue: '1000.0'
+    exportMph: 'false'
+    validPixelExpression: null
+Msavi2Op:
+  desc: This retrieves the second Modified Soil Adjusted Vegetation Index (MSAVI2).
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+MsaviOp:
+  desc: This retrieves the Modified Soil Adjusted Vegetation Index (MSAVI).
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    slope: 0.5F
+    upsamplingMethod: Nearest
+MtciOp:
+  desc: The Meris Terrestrial Chlorophyll Index,  aims at estimating the Red Edge Position (REP). This is the maximum slant point in the red and near-infrared region of the vegetal spectral reflectance. It is useful for observing the chlorophyll contents, vegetation senescence, and stress for water and nutritional deficiencies, but it is less suitable for land classification
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redB4Factor: 1.0F
+    redB5Factor: 1.0F
+    redSourceBand4: null
+    redSourceBand5: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Multi-Temporal-Speckle-Filter:
+  desc: Speckle Reduction using Multitemporal Filtering
+  params:
+    anSize: '50'
+    dampingFactor: '2'
+    enl: '1.0'
+    estimateENL: 'false'
+    filter: Lee Sigma
+    filterSizeX: '3'
+    filterSizeY: '3'
+    numLooksStr: '1'
+    sigmaStr: '0.9'
+    sourceBandNames: null
+    targetWindowSizeStr: 3x3
+    windowSize: 7x7
+Multi-size Mosaic:
+  desc: Creates a multi-size mosaic out of a set of source products.
+  params:
+    combine: OR
+    conditions: null
+    crs: EPSG:4326
+    eastBound: '30.0'
+    elevationModelName: null
+    nativeResolution: 'true'
+    northBound: '75.0'
+    orthorectify: 'false'
+    overlappingMethod: MOSAIC_TYPE_OVERLAY
+    pixelSizeX: '0.005'
+    pixelSizeY: '0.005'
+    resamplingName: Nearest
+    southBound: '35.0'
+    variables: null
+    westBound: '-15.0'
+MultiMasterStackGenerator:
+  desc: Generates a set of master-slave pairs from a coregistered stack for use in SBAS processing
+  params:
+    outputFolder: null
+Multilook:
+  desc: Averages the power across a number of lines in both the azimuth and range directions
+  params:
+    grSquarePixel: 'true'
+    nAzLooks: '1'
+    nRgLooks: '1'
+    outputIntensity: 'false'
+    sourceBandNames: null
+Multitemporal-Compositing:
+  desc: Compute composite image from multi-temporal RTCs
+  params: {}
+Ndi45Op:
+  desc: Normalized Difference Index using bands 4 and 5
+  params:
+    downsamplingMethod: First
+    redB4Factor: 1.0F
+    redB5Factor: 1.0F
+    redSourceBand4: null
+    redSourceBand5: null
+    resampleType: None
+    upsamplingMethod: Nearest
+NdpiOp:
+  desc: The normalized differential pond index, combines the short-wave infrared band-I and the green band
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    mirFactor: 1.0F
+    mirSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+NdtiOp:
+  desc: Normalized difference turbidity index, allowing for the measurement of water turbidity
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+NdviOp:
+  desc: The retrieves the Normalized Difference Vegetation Index (NDVI).
+  params:
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+Ndwi2Op:
+  desc: The Normalized Difference Water Index, allowing for the measurement of surface water extent
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    nirFactor: 1.0F
+    nirSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+NdwiOp:
+  desc: The Normalized Difference Water Index was developed for the extraction of water features
+  params:
+    downsamplingMethod: First
+    mirFactor: 1.0F
+    mirSourceBand: null
+    nirFactor: 1.0F
+    nirSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+OWTClassification:
+  desc: Performs an optical water type classification based on atmospherically corrected reflectances.
+  params:
+    inputReflectanceIs: RADIANCE_REFLECTANCES
+    owtType: COASTAL
+    reflectancesPrefix: reflec
+    writeInputReflectances: 'false'
+Object-Discrimination:
+  desc: Remove false alarms from the detected objects.
+  params:
+    maxTargetSizeInMeter: '600.0'
+    minTargetSizeInMeter: '50.0'
+Offset-Tracking:
+  desc: Create velocity vectors from offset tracking
+  params:
+    averageBoxSize: '5'
+    fillHoles: 'true'
+    gridAzimuthSpacing: '40'
+    gridRangeSpacing: '40'
+    maxVelocity: '5.0'
+    radius: '4'
+    registrationOversampling: '16'
+    registrationWindowHeight: '128'
+    registrationWindowWidth: '128'
+    resamplingType: BICUBIC_INTERPOLATION
+    roiVector: null
+    spatialAverage: 'true'
+    xCorrThreshold: '0.1'
+Oil-Spill-Clustering:
+  desc: Remove small clusters from detected area.
+  params:
+    minClusterSizeInKm2: '0.1'
+Oil-Spill-Detection:
+  desc: Detect oil spill.
+  params:
+    backgroundWindowDim: '4.5'
+    k: '2.0'
+    sourceBandNames: null
+OlciO2aHarmonisation:
+  desc: Performs O2A band harmonisation on OLCI L1b product. Implements update v4 of R.Preusker, June 2020.
+  params:
+    alternativeAltitudeBandName: null
+    processOnlyBand13: 'true'
+    writeHarmonisedRadiances: 'true'
+Orientation-Angle-Correction:
+  desc: Perform polarization orientation angle correction for given coherency matrix
+  params:
+    outputOrientationAngle: 'false'
+Oversample:
+  desc: Oversample the datset
+  params:
+    azimuthSpacing: '12.5'
+    heightRatio: '2.0'
+    outputImageBy: Ratio
+    rangeSpacing: '12.5'
+    sourceBandNames: null
+    targetImageHeight: '1000'
+    targetImageWidth: '1000'
+    usePRFTileSize: 'false'
+    widthRatio: '2.0'
+PCA:
+  desc: Performs a Principal Component Analysis.
+  params:
+    componentCount: '-1'
+    removeNonRoiPixels: 'false'
+    roiMaskName: null
+    sourceBandNames: null
+PassThrough:
+  desc: Sets target product to source product.
+  params: {}
+PduStitching:
+  desc: Stitches multiple SLSTR L1B product dissemination units (PDUs) of the same orbit to a single product.
+  params:
+    sourceProductPaths: null
+    targetDir: null
+PhaseToDisplacement:
+  desc: Phase To Displacement Conversion along LOS
+  params: {}
+PhaseToElevation:
+  desc: DEM Generation
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BILINEAR_INTERPOLATION
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+PhaseToHeight:
+  desc: Phase to Height conversion
+  params:
+    degree1D: '2'
+    degree2D: '5'
+    nHeights: '3'
+    nPoints: '200'
+    orbitDegree: '3'
+PixEx:
+  desc: Extracts pixels from given locations and source products.
+  params:
+    aggregatorStrategyType: no aggregation
+    coordinates: null
+    coordinatesFile: null
+    dateInterpretationPattern: yyyyMMdd
+    exportBands: 'true'
+    exportExpressionResult: 'true'
+    exportKmz: 'false'
+    exportMasks: 'true'
+    exportSubScenes: 'false'
+    exportTiePoints: 'true'
+    expression: null
+    extractTimeFromFilename: 'false'
+    filenameInterpretationPattern: '*${startDate}*${endDate}*'
+    includeOriginalInput: 'false'
+    matchupFile: null
+    outputDir: null
+    outputFilePrefix: pixEx
+    scatterPlotVariableCombinations: null
+    sourceProductPaths: null
+    subSceneBorderSize: '0'
+    timeDifference: null
+    windowSize: '1'
+Polarimetric-Classification:
+  desc: Perform Polarimetric classification of a given product
+  params:
+    classification: H Alpha Wishart
+    decomposition: Sinclair Decomposition
+    maxIterations: '3'
+    mixedCategoryThreshold: '0.5'
+    numFinalClasses: '15'
+    numInitialClasses: '90'
+    windowSize: '5'
+Polarimetric-Decomposition:
+  desc: Perform Polarimetric decomposition of a given product
+  params:
+    decomposition: Sinclair Decomposition
+    outputAlpha123: 'false'
+    outputBetaDeltaGammaLambda: 'false'
+    outputHAAlpha: 'false'
+    outputHuynenParamSet0: 'true'
+    outputHuynenParamSet1: 'false'
+    outputLambda123: 'false'
+    outputTouziParamSet0: 'false'
+    outputTouziParamSet1: 'false'
+    outputTouziParamSet2: 'false'
+    outputTouziParamSet3: 'false'
+    windowSize: '5'
+Polarimetric-Matrices:
+  desc: Generates covariance or coherency matrix for given product
+  params:
+    matrix: T3
+Polarimetric-Parameters:
+  desc: Compute general polarimetric parameters
+  params:
+    outputBMI: 'false'
+    outputCSI: 'false'
+    outputHHHVRatio: 'false'
+    outputHHVVRatio: 'false'
+    outputITI: 'false'
+    outputPedestalHeight: 'false'
+    outputRFDI: 'false'
+    outputRVI: 'false'
+    outputSpan: 'true'
+    outputVSI: 'false'
+    outputVVVHRatio: 'false'
+    useMeanMatrix: 'true'
+    windowSizeXStr: '5'
+    windowSizeYStr: '5'
+Polarimetric-Speckle-Filter:
+  desc: Polarimetric Speckle Reduction
+  params:
+    anSize: '50'
+    filter: Refined Lee Filter
+    filterSize: '5'
+    numLooksStr: '1'
+    patchSizeStr: '5'
+    scaleSizeStr: '1'
+    searchWindowSizeStr: '15'
+    sigmaStr: '0.9'
+    targetWindowSizeStr: 3x3
+    windowSize: 7x7
+PpeFiltering:
+  desc: Performs Prompt Particle Event (PPE) filtering on OLCI L1B
+  params:
+    cutOff: '0.7'
+    numberOfMAD: '10'
+    validExpression: not quality_flags_land
+Principle-Components:
+  desc: Principle Component Analysis
+  params:
+    eigenvalueThreshold: '100'
+    numPCA: '1'
+    selectEigenvaluesBy: Eigenvalue Threshold
+    showEigenvalues: '1'
+    sourceBandNames: null
+    subtractMeanImage: '1'
+ProductSet-Reader:
+  desc: Adds a list of sources
+  params:
+    fileList: null
+PssraOp:
+  desc: Pigment Specific Simple Ratio, chlorophyll index
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+PviOp:
+  desc: Perpendicular Vegetation Index retrieves the Isovegetation lines parallel to soil line. Soil line has an arbitrary slope and passes through origin
+  params:
+    angleSoilLineNIRAxis: '45.0'
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+PyOp:
+  desc: Uses Python code to process data products
+  params:
+    pythonClassName: null
+    pythonModuleName: null
+    pythonModulePath: .
+RRToFRS:
+  desc: null
+  params: {}
+Rad2Refl:
+  desc: Provides conversion from radiances to reflectances or backwards.
+  params:
+    conversionMode: RAD_TO_REFL
+    copyFlagBandsAndMasks: 'false'
+    copyNonSpectralBands: 'false'
+    copyTiePointGrids: 'false'
+    sensor: OLCI
+Radar-Vegetation-Index:
+  desc: Dual-pol Radar Vegetation Indices generation
+  params:
+    windowSize: '5'
+Random-Forest-Classifier:
+  desc: Random Forest based classifier
+  params:
+    classLevels: '101'
+    classValStepSize: '5.0'
+    doClassValQuantization: 'true'
+    doLoadClassifier: 'false'
+    evaluateClassifier: 'false'
+    evaluateFeaturePowerSet: 'false'
+    featureBands: null
+    labelSource: null
+    maxPowerSetSize: '7'
+    minClassValue: '0.0'
+    minPowerSetSize: '2'
+    numTrainSamples: '50000'
+    savedClassifierName: null
+    trainOnRaster: 'false'
+    trainingBands: null
+    trainingVectors: null
+    treeCount: '10'
+RangeFilter:
+  desc: Range Filter
+  params:
+    alphaHamming: '0.75'
+    doWeightCorrel: 'off'
+    fftLength: '8'
+    nlMean: '15'
+    ovsmpFactor: '1'
+    snrThresh: '5'
+RayleighCorrection:
+  desc: Performs radiometric corrections on OLCI, MERIS L1B and S2 MSI L1C data products.
+  params:
+    addAirMass: 'false'
+    computeRBrr: 'true'
+    computeRtoa: 'false'
+    computeRtoaNg: 'false'
+    computeTaur: 'false'
+    s2MsiOzone: '300.0'
+    s2MsiSeaLevelPressure: '1013.25'
+    s2MsiTargetResolution: '20'
+    sourceBandNames: null
+Read:
+  desc: Reads a data product from a given file location.
+  params:
+    bandNames: null
+    copyMetadata: 'true'
+    file: null
+    formatName: null
+    geometryRegion: null
+    maskNames: null
+    pixelRegion: null
+ReflectanceToRadianceOp:
+  desc: The 'Reflectance To Radiance Processor' operator retrieves the radiance from reflectance using Sentinel-2 products
+  params:
+    copyMasks: 'false'
+    incidenceAngle: null
+    solarIrradiance: null
+    sourceBandNames: null
+    u: null
+ReipOp:
+  desc: The red edge inflection point index
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redB4Factor: 1.0F
+    redB5Factor: 1.0F
+    redB6Factor: 1.0F
+    redSourceBand4: null
+    redSourceBand5: null
+    redSourceBand6: null
+    resampleType: None
+    upsamplingMethod: Nearest
+Remodulate:
+  desc: Remodulation and reramping of SLC data
+  params: {}
+RemoteExecutionOp:
+  desc: The Remote Execution Processor executes on the remote machines a slave graph and then on the host machine it executes a master graph using the products created by the remote machines.
+  params:
+    continueOnFailure: null
+    localPassword: null
+    localSharedFolderPath: null
+    masterGraphFilePath: null
+    masterProductFilePath: null
+    masterProductFormatName: null
+    remoteMachines: null
+    remoteSharedFolderPassword: null
+    remoteSharedFolderPath: null
+    remoteSharedFolderUsername: null
+    slaveGraphFilePath: null
+    slaveProductsFolderNamePrefix: null
+    slaveProductsFormatName: null
+    slaveProductsName: null
+    sourceProductFiles: null
+    waitingSecondsTimeout: null
+Remove-GRD-Border-Noise:
+  desc: Mask no-value pixels for GRD product
+  params:
+    borderLimit: '500'
+    selectedPolarisations: null
+    trimThreshold: '0.5'
+RemoveAntennaPattern:
+  desc: Remove Antenna Pattern
+  params:
+    sourceBandNames: null
+ReplaceMetadata:
+  desc: Replace the metadata of the first product with that of the second
+  params:
+    note: Replace the metadata of the first product with that of the second
+Reproject:
+  desc: Reprojection of a source product to a target Coordinate Reference System.
+  params:
+    addDeltaBands: 'false'
+    crs: null
+    easting: null
+    elevationModelName: null
+    height: null
+    includeTiePointGrids: 'true'
+    noDataValue: null
+    northing: null
+    orientation: '0'
+    orthorectify: 'false'
+    pixelSizeX: null
+    pixelSizeY: null
+    referencePixelX: null
+    referencePixelY: null
+    resamplingName: Nearest
+    tileSizeX: null
+    tileSizeY: null
+    width: null
+    wktFile: null
+Resample:
+  desc: Resampling of a multi-size source product to a single-size target product.
+  params:
+    bandResamplings: null
+    downsamplingMethod: First
+    flagDownsamplingMethod: First
+    referenceBandName: null
+    resampleOnPyramidLevels: 'true'
+    resamplingPreset: null
+    targetHeight: null
+    targetResolution: null
+    targetWidth: null
+    upsamplingMethod: Nearest
+RiOp:
+  desc: The Redness Index was developed to identify soil colour variations.
+  params:
+    downsamplingMethod: First
+    greenFactor: 1.0F
+    greenSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+RviOp:
+  desc: Ratio Vegetation Index retrieves the Isovegetation lines converge at origin
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+S2Resampling:
+  desc: Specific S2 resample algorithm
+  params:
+    downsamplingMethod: Mean
+    flagDownsamplingMethod: First
+    resampleOnPyramidLevels: 'true'
+    targetResolution: '60'
+    upsamplingMethod: Bilinear
+S2repOp:
+  desc: Sentinel-2 red-edge position index
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redB4Factor: 1.0F
+    redB5Factor: 1.0F
+    redB6Factor: 1.0F
+    redSourceBand4: null
+    redSourceBand5: null
+    redSourceBand6: null
+    resampleType: None
+    upsamplingMethod: Nearest
+S2tbx-Reproject:
+  desc: Reprojection of a source product to a target Coordinate Reference System.
+  params:
+    addDeltaBands: 'false'
+    crs: null
+    easting: null
+    elevationModelName: null
+    height: null
+    includeTiePointGrids: 'true'
+    noDataValue: null
+    northing: null
+    orientation: '0'
+    orthorectify: 'false'
+    pixelSizeX: null
+    pixelSizeY: null
+    referencePixelX: null
+    referencePixelY: null
+    resamplingName: Nearest
+    tileSizeX: null
+    tileSizeY: null
+    width: null
+    wktFile: null
+SAR-Mosaic:
+  desc: Mosaics two or more products based on their geo-codings.
+  params:
+    average: 'true'
+    convergenceThreshold: 1e-4
+    feather: '0'
+    gradientDomainMosaic: 'false'
+    maxIterations: '5000'
+    normalizeByMean: 'true'
+    pixelSize: '0'
+    resamplingMethod: NEAREST_NEIGHBOUR
+    sceneHeight: '0'
+    sceneWidth: '0'
+    sourceBandNames: null
+SAR-Simulation:
+  desc: Rigorous SAR Simulation
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BICUBIC_INTERPOLATION
+    externalDEMApplyEGM: 'true'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    saveLayoverShadowMask: 'false'
+    sourceBandNames: null
+SARSim-Terrain-Correction:
+  desc: Orthorectification with SAR simulation
+  params:
+    alignToStandardGrid: 'false'
+    applyRadiometricNormalization: 'false'
+    auxFile: Latest Auxiliary File
+    externalAuxFile: null
+    imgResamplingMethod: BILINEAR_INTERPOLATION
+    incidenceAngleForGamma0: Use projected local incidence angle from DEM
+    incidenceAngleForSigma0: Use projected local incidence angle from DEM
+    mapProjection: null
+    openResidualsFile: 'false'
+    openShiftsFile: 'false'
+    pixelSpacingInDegree: '0'
+    pixelSpacingInMeter: '0'
+    rmsThreshold: '1.0'
+    saveBetaNought: 'false'
+    saveDEM: 'false'
+    saveGammaNought: 'false'
+    saveLatLon: 'false'
+    saveLocalIncidenceAngle: 'false'
+    saveProjectedLocalIncidenceAngle: 'false'
+    saveSelectedSourceBand: 'true'
+    saveSigmaNought: 'false'
+    standardGridOriginX: '0'
+    standardGridOriginY: '0'
+    warpPolynomialOrder: '1'
+SM-Dielectric-Modeling:
+  desc: Performs SM inversion using dielectric model
+  params:
+    effectiveSoilTemperature: '18.0'
+    maxSM: '0.55'
+    minSM: '0.0'
+    modelToUse: Hallikainen
+    outputLandCover: 'true'
+    outputRDC: 'true'
+SRGR:
+  desc: Converts Slant Range to Ground Range
+  params:
+    interpolationMethod: Linear interpolation
+    sourceBandNames: null
+    warpPolynomialOrder: '4'
+SaviOp:
+  desc: This retrieves the Soil-Adjusted Vegetation Index (SAVI).
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    soilCorrectionFactor: 0.5F
+    upsamplingMethod: Nearest
+SetNoDataValue:
+  desc: Set NoDataValueUsed flag and NoDataValue for all bands
+  params:
+    noDataValue: '0.0'
+    noDataValueUsed: 'true'
+SimulateAmplitude:
+  desc: Simulate amplitude based on DEM
+  params:
+    demName: SRTM 3Sec
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    orbitDegree: '3'
+    simAmpBandName: sim_amp
+SliceAssembly:
+  desc: Merges Sentinel-1 slice products
+  params:
+    selectedPolarisations: null
+SmacOp:
+  desc: Applies the Simplified Method for Atmospheric Corrections of Envisat MERIS/(A)ATSR measurements.
+  params:
+    aerosolType: CONTINENTAL
+    bandNames: null
+    invalidPixel: '0.0'
+    maskExpression: null
+    maskExpressionForward: null
+    surfPress: '1013.0'
+    tauAero550: '0.2'
+    uH2o: '3.0'
+    uO3: '0.15'
+    useMerisADS: 'false'
+SmileCorrection.Olci:
+  desc: Performs radiometric corrections on OLCI L1b data products.
+  params: {}
+SnaphuExport:
+  desc: Export data and prepare conf file for SNAPHU processing
+  params:
+    colOverlap: '200'
+    initMethod: MST
+    numberOfProcessors: '4'
+    numberOfTileCols: '10'
+    numberOfTileRows: '10'
+    rowOverlap: '200'
+    statCostMode: DEFO
+    targetFolder: null
+    tileCostThreshold: '500'
+SnaphuImport:
+  desc: Ingest SNAPHU results into InSAR product.
+  params:
+    doNotKeepWrapped: 'false'
+Speckle-Divergence:
+  desc: Detect urban area.
+  params:
+    sourceBands: null
+    windowSizeStr: 15x15
+Speckle-Filter:
+  desc: Speckle Reduction
+  params:
+    anSize: '50'
+    dampingFactor: '2'
+    enl: '1.0'
+    estimateENL: 'false'
+    filter: Lee Sigma
+    filterSizeX: '3'
+    filterSizeY: '3'
+    numLooksStr: '1'
+    sigmaStr: '0.9'
+    sourceBandNames: null
+    targetWindowSizeStr: 3x3
+    windowSize: 7x7
+SpectralAngleMapperOp:
+  desc: Classifies a product using the spectral angle mapper algorithm
+  params:
+    downsamplingMethod: First
+    hiddenSpectra: null
+    referenceBands: null
+    resampleType: None
+    spectra: null
+    thresholds: '0.0'
+    upsamplingMethod: Nearest
+Stack-Averaging:
+  desc: Averaging multi-temporal images
+  params:
+    statistic: Mean Average
+Stack-Split:
+  desc: Writes all bands to files.
+  params:
+    formatName: BEAM-DIMAP
+    targetFolder: target
+StampsExport:
+  desc: Export data for StaMPS processing
+  params:
+    psiFormat: 'true'
+    targetFolder: null
+StatisticsOp:
+  desc: Computes statistics for an arbitrary number of source products.
+  params:
+    accuracy: '3'
+    bandConfigurations: null
+    endDate: null
+    featureId: name
+    interval: null
+    outputAsciiFile: null
+    outputShapefile: null
+    percentiles: 90,95
+    shapefile: null
+    sourceProductPaths: null
+    startDate: null
+    writeDataTypesSeparately: 'false'
+StoredGraph:
+  desc: Encapsulates an stored graph into an operator.
+  params:
+    file: null
+SubGraph:
+  desc: Encapsulates a graph within a graph.
+  params:
+    graphFile: null
+Subset:
+  desc: Create a spatial and/or spectral subset of a data product.
+  params:
+    bandNames: null
+    copyMetadata: 'false'
+    fullSwath: 'false'
+    geoRegion: null
+    referenceBand: null
+    region: null
+    subSamplingX: '1'
+    subSamplingY: '1'
+    tiePointGridNames: null
+Supervised-Wishart-Classification:
+  desc: Perform supervised Wishart classification
+  params:
+    trainingDataSet: null
+    windowSize: '5'
+TOPSAR-Deburst:
+  desc: Debursts a Sentinel-1 TOPSAR product
+  params:
+    selectedPolarisations: null
+TOPSAR-DerampDemod:
+  desc: Bursts co-registration using orbit and DEM
+  params:
+    outputDerampDemodPhase: 'false'
+TOPSAR-Merge:
+  desc: Merge subswaths of a Sentinel-1 TOPSAR product
+  params:
+    selectedPolarisations: null
+TOPSAR-Split:
+  desc: Creates a new product with only the selected subswath
+  params:
+    firstBurstIndex: '1'
+    lastBurstIndex: '9999'
+    selectedPolarisations: null
+    subswath: null
+    wktAoi: null
+TemporalPercentile:
+  desc: Computes percentiles over a given time period.
+  params:
+    bandMathsExpression: null
+    crs: EPSG:4326
+    eastBound: '30.0'
+    endDate: null
+    endValueFallback: '0.0'
+    gapFillingMethod: gapFillingLinearInterpolation
+    keepIntermediateTimeSeriesProduct: 'true'
+    northBound: '75.0'
+    percentileBandNamePrefix: null
+    percentiles: '90'
+    pixelSizeX: '0.05'
+    pixelSizeY: '0.05'
+    resamplingMethodName: Nearest
+    sourceBandName: null
+    sourceProductPaths: null
+    southBound: '35.0'
+    startDate: null
+    startValueFallback: '0.0'
+    timeSeriesOutputDir: null
+    validPixelExpression: 'true'
+    westBound: '-15.0'
+Terrain-Correction:
+  desc: RD method for orthorectification
+  params:
+    alignToStandardGrid: 'false'
+    applyRadiometricNormalization: 'false'
+    auxFile: Latest Auxiliary File
+    demName: SRTM 3Sec
+    demResamplingMethod: BILINEAR_INTERPOLATION
+    externalAuxFile: null
+    externalDEMApplyEGM: 'true'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    imgResamplingMethod: BILINEAR_INTERPOLATION
+    incidenceAngleForGamma0: Use projected local incidence angle from DEM
+    incidenceAngleForSigma0: Use projected local incidence angle from DEM
+    mapProjection: WGS84(DD)
+    nodataValueAtSea: 'true'
+    pixelSpacingInDegree: '0'
+    pixelSpacingInMeter: '0'
+    saveBetaNought: 'false'
+    saveDEM: 'false'
+    saveGammaNought: 'false'
+    saveIncidenceAngleFromEllipsoid: 'false'
+    saveLatLon: 'false'
+    saveLayoverShadowMask: 'false'
+    saveLocalIncidenceAngle: 'false'
+    saveProjectedLocalIncidenceAngle: 'false'
+    saveSelectedSourceBand: 'true'
+    saveSigmaNought: 'false'
+    sourceBandNames: null
+    standardGridOriginX: '0'
+    standardGridOriginY: '0'
+Terrain-Flattening:
+  desc: Terrain Flattening
+  params:
+    additionalOverlap: '0.1'
+    demName: SRTM 1Sec HGT
+    demResamplingMethod: BILINEAR_INTERPOLATION
+    externalDEMApplyEGM: 'false'
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    outputSigma0: 'false'
+    outputSimulatedImage: 'false'
+    oversamplingMultiple: '1.0'
+    sourceBandNames: null
+Terrain-Mask:
+  desc: Terrain Mask Generation
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: NEAREST_NEIGHBOUR
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    thresholdInMeter: '40.0'
+    windowSizeStr: 15x15
+TestPattern:
+  desc: For testing only
+  params:
+    sourceBandNames: null
+ThermalNoiseRemoval:
+  desc: Removes thermal noise from products
+  params:
+    reIntroduceThermalNoise: 'false'
+    removeThermalNoise: 'true'
+    selectedPolarisations: null
+Three-passDInSAR:
+  desc: Differential Interferometry
+  params:
+    orbitDegree: '3'
+TileCache:
+  desc: Experimental Operator which provides a dedicated cache for its source product. A guide on how this operator is used is provided at https://senbox.atlassian.net/wiki/x/VQCTLw.
+  params:
+    cacheSize: '1000'
+TileWriter:
+  desc: Writes a data product to a tiles.
+  params:
+    divisionBy: Tiles
+    file: null
+    formatName: BEAM-DIMAP
+    numberOfTiles: '4'
+    overlap: '0'
+    pixelSizeX: '200'
+    pixelSizeY: '200'
+TndviOp:
+  desc: Transformed Normalized Difference Vegetation Index retrieves the Isovegetation lines parallel to soil line
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    upsamplingMethod: Nearest
+ToolAdapterOp:
+  desc: Tool Adapter Operator
+  params: {}
+TopoPhaseRemoval:
+  desc: Compute and subtract TOPO phase
+  params:
+    demName: SRTM 3Sec
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    orbitDegree: '3'
+    outputElevationBand: 'false'
+    outputLatLonBands: 'false'
+    outputTopoPhaseBand: 'false'
+    tileExtensionPercent: '100'
+TsaviOp:
+  desc: This retrieves the Transformed Soil Adjusted Vegetation Index (TSAVI).
+  params:
+    adjustment: 0.08F
+    downsamplingMethod: First
+    intercept: 0.5F
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    slope: 0.5F
+    upsamplingMethod: Nearest
+Undersample:
+  desc: Undersample the datset
+  params:
+    azimuthSpacing: '12.5'
+    filterSize: 3x3
+    heightRatio: '0.5'
+    method: LowPass Filtering
+    outputImageBy: Ratio
+    rangeSpacing: '12.5'
+    sourceBandNames: null
+    subSamplingX: '2'
+    subSamplingY: '2'
+    targetImageHeight: '1000'
+    targetImageWidth: '1000'
+    widthRatio: '0.5'
+Unmix:
+  desc: Performs a linear spectral unmixing.
+  params:
+    abundanceBandNameSuffix: _abundance
+    computeErrorBands: 'false'
+    endmemberFile: null
+    endmembers: null
+    errorBandNameSuffix: _error
+    minBandwidth: '10.0'
+    sourceBandNames: null
+    unmixingModelName: Constrained LSU
+Update-Geo-Reference:
+  desc: Update Geo Reference
+  params:
+    demName: SRTM 3Sec
+    demResamplingMethod: BICUBIC_INTERPOLATION
+    externalDEMFile: null
+    externalDEMNoDataValue: '0'
+    reGridMethod: 'false'
+    sourceBandNames: null
+Warp:
+  desc: Create Warp Function And Get Co-registrated Images
+  params:
+    demName: SRTM 3Sec
+    demRefinement: 'false'
+    excludeMaster: 'false'
+    interpolationMethod: Cubic convolution (6 points)
+    openResidualsFile: 'false'
+    rmsThreshold: '0.05'
+    warpPolynomialOrder: '2'
+WdviOp:
+  desc: Weighted Difference Vegetation Index retrieves the Isovegetation lines parallel to soil line. Soil line has an arbitrary slope and passes through origin
+  params:
+    downsamplingMethod: First
+    nirFactor: 1.0F
+    nirSourceBand: null
+    redFactor: 1.0F
+    redSourceBand: null
+    resampleType: None
+    slopeSoilLine: 1.5F
+    upsamplingMethod: Nearest
+Wind-Field-Estimation:
+  desc: Estimate wind speed and direction
+  params:
+    sourceBandNames: null
+    windowSizeInKm: '20.0'
+Write:
+  desc: Writes a data product to a file.
+  params:
+    clearCacheAfterRowWrite: 'false'
+    deleteOutputOnFailure: 'true'
+    file: null
+    formatName: BEAM-DIMAP
+    writeEntireTileRows: 'false'
+WriteRGB:
+  desc: Creates an RGB image from three source bands.
+  params:
+    blue: null
+    file: null
+    formatName: png
+    green: null
+    red: null
+c2rcc:
+  desc: Performs atmospheric correction and IOP retrieval on OLCI, MSI, MERIS, MODIS or SeaWiFS L1 product.
+  params:
+    atmosphericAuxDataPath: null
+    outputAsRrs: 'false'
+    outputRtosa: 'false'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    sensorName: null
+    temperature: '15.0'
+    useDefaultSolarFlux: 'false'
+    useEcmwfAuxData: 'true'
+    validPixelExpression: null
+c2rcc.landsat7:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on Landsat-7 L1 data products.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.72'
+    TSMfakBwit: '3.1'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    elevation: '0'
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.1'
+    thresholdCloudTDown835: '0.955'
+    thresholdRtosaOOS: '0.05'
+    validPixelExpression: null
+c2rcc.landsat8:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on Landsat-8 L1 data products.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.72'
+    TSMfakBwit: '3.1'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    elevation: '0'
+    netSet: C2RCC-Nets
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.1'
+    thresholdCloudTDown865: '0.955'
+    thresholdRtosaOOS: '0.05'
+    validPixelExpression: null
+c2rcc.meris:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.72'
+    TSMfakBwit: '3.1'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    netSet: C2RCC-Nets
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.1'
+    thresholdCloudTDown865: '0.955'
+    thresholdRtosaOOS: '0.003'
+    useDefaultSolarFlux: 'false'
+    useEcmwfAuxData: 'true'
+    validPixelExpression: '!l1_flags.INVALID && !l1_flags.LAND_OCEAN'
+c2rcc.meris4:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on MERIS L1b data products from the 4th reprocessing.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.72'
+    TSMfakBwit: '3.1'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    netSet: C2RCC-Nets
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.1'
+    thresholdCloudTDown865: '0.955'
+    thresholdRtosaOOS: '0.003'
+    useEcmwfAuxData: 'true'
+    validPixelExpression: '!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)'
+c2rcc.modis:
+  desc: Performs atmospheric correction and IOP retrieval on MODIS L1C_LAC data products.
+  params:
+    atmosphericAuxDataPath: null
+    outputAngles: 'false'
+    outputAsRrs: 'false'
+    outputRtosa: 'false'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    validPixelExpression: '!(l2_flags.LAND ||  max(rhot_412,max(rhot_443,max(rhot_488,max(rhot_531,max(rhot_547,max(rhot_555,max(rhot_667,max(rhot_678,max(rhot_748,rhot_869)))))))))>0.25)'
+c2rcc.msi:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on Sentinel-2 MSI L1C data products.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.06'
+    TSMfakBwit: '0.942'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    elevation: '0'
+    netSet: C2RCC-Nets
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.1'
+    thresholdCloudTDown865: '0.955'
+    thresholdRtosaOOS: '0.05'
+    validPixelExpression: B8 > 0 && B8 < 0.1
+c2rcc.olci:
+  desc: Performs atmospheric correction and IOP retrieval with uncertainties on SENTINEL-3 OLCI L1B data products.
+  params:
+    CHLexp: '1.04'
+    CHLfak: '21.0'
+    TSMfakBpart: '1.06'
+    TSMfakBwit: '0.942'
+    alternativeNNPath: null
+    atmosphericAuxDataPath: null
+    deriveRwFromPathAndTransmittance: 'false'
+    outputAcReflectance: 'true'
+    outputAsRrs: 'false'
+    outputKd: 'true'
+    outputOos: 'false'
+    outputRhown: 'true'
+    outputRpath: 'false'
+    outputRtoa: 'true'
+    outputRtosaGc: 'false'
+    outputRtosaGcAann: 'false'
+    outputTdown: 'false'
+    outputTup: 'false'
+    outputUncertainties: 'true'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    thresholdAcReflecOos: '0.15'
+    thresholdCloudTDown865: '0.955'
+    thresholdRtosaOOS: '0.01'
+    useEcmwfAuxData: 'true'
+    validPixelExpression: '!quality_flags.invalid && (!quality_flags.land || quality_flags.fresh_inland_water)'
+c2rcc.seawifs:
+  desc: Performs atmospheric correction and IOP retrieval on SeaWifs L1C data products.
+  params:
+    atmosphericAuxDataPath: null
+    outputAsRrs: 'false'
+    outputRtosa: 'false'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    validPixelExpression: '!(l2_flags.LAND || rhot_865 > 0.25)'
+c2rcc.viirs:
+  desc: Performs atmospheric correction and IOP retrieval on Viirs L1C data products.
+  params:
+    atmosphericAuxDataPath: null
+    outputAsRrs: 'false'
+    outputRtosa: 'false'
+    ozone: '330'
+    press: '1000'
+    salinity: '35.0'
+    temperature: '15.0'
+    validPixelExpression: '!(l2_flags.LAND || rhot_862 > 0.25)'
