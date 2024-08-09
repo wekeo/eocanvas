@@ -64,7 +64,7 @@ class API(metaclass=Singleton):
 
     def get_processes(self) -> List[Process]:
         """Gets the list of available processes.
-        There should be only Snap and Datatailor functions.
+        There should be only SNAP and Datatailor functions.
 
         Returns:
             A list of :class:`eocanvas.api.Process` instances.
@@ -255,7 +255,7 @@ class LogEntry:
 
 @dataclass
 class Process:
-    """A process defines either a Snap or a Datatailor function."""
+    """A process defines either a SNAP or a Datatailor function."""
 
     api: Optional[API] = None
     process_id: Optional[str] = None

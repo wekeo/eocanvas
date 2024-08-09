@@ -102,3 +102,13 @@ jobs:
           python -m pip install conda-build anaconda-client
           conda config --set anaconda_upload yes
           conda-build .
+
+      - name: Build documentation
+        run: |
+          python -m pip install sphinx sphinx-rtd-theme sphinxcontrib-napoleon
+          sphinx-build -b html docs/source/ docs/_build/html/
+
+      - name: Deploy to ReadTheDocs
+        run: |
+          curl -X POST "https://readthedocs.org/api/v3/projects/eocanvas/builds/" \
+            -H "Authorization: Token ${{ secrets.RTD_TOKEN }}"

@@ -5,7 +5,7 @@ As mentioned in the :doc:`quickstart </quickstart>` page, EO Canvas allows you t
 to interact with the API in a more direct way.
 
 The two fundamental concepts of the Serverless Functions service are *processes* and *jobs*.
-A *process* describes either a Snap or a Data Tailor computation.
+A *process* describes either a SNAP or a Data Tailor computation.
 A *job*, on the other hand, is a submission of a process to the API, and it's used to keep track of
 its state, to retrieve the application logs and, finally, to retrieve the results.
 
@@ -23,20 +23,23 @@ To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
     >> [Process(api=<eocanvas.api.API object at 0x7facd05a97e0>, process_id='snap-function', ...]
 
-The available processes are predefined. New tools or the custom functions might be added in future.
+The available processes are predefined. New tools or custom functions might be added in future.
 
-Processes inputs must be configured prior to submit them. **Snap** and **Data Tailor** has similar but different sets of inputs.
+Process inputs must be configured before submitting them. **SNAP** and **Data Tailor** has similar but different sets of inputs.
 
-Snap
+SNAP
 ----
-**Snap** processing is configured through an XML object called a `Graph`. Such graph contains nodes for the inputs.
+**SNAP** processing is configured through an XML object called a `Graph`. Such graph contains nodes for the inputs.
 
-Since Snap is being executed remotely, those inputs are defined as placeholders and then passed in through :class:`eocanvas.api.Input` objects.
+Please refer to `official SNAP documentation <https://step.esa.int/main/doc/online-help/>`_ for further details.
+
+Since SNAP is being executed remotely, those inputs are defined as placeholders and then passed in through :class:`eocanvas.api.Input` objects.
 
 Extra configuration can be added using the :class:`eocanvas.api.Option` class.
 
-**EO Canvas** handles graphs on an embedded version of `Snapista <https://snap-contrib.github.io/snapista/>`_. *Snapista* requires a local Snap instance to work, to which it can submit the graph.
-The embedded version instead only allows to programmatically build or load the graph from an XML file. It also encode it before it gets submitted to the API.
+**EO Canvas** handles graphs through an embedded version of `Snapista <https://snap-contrib.github.io/snapista/>`_.
+*Snapista* requires a local SNAP instance to work, to which it can submit the graph.
+The embedded version instead only allows to programmatically build or load the graph from an XML file. It also encodes it before it gets submitted to the API.
 
 Generally speaking, having pre-cooked graphs is a better option. The `demo` directory contains some examples.
 
@@ -66,7 +69,7 @@ Please note how the input node has been defined:
       </parameters>
     </node>
 
-The *$img1* is an arbitrary placeholder and can be used to further configure the input.
+The *$img1* is an arbitrary placeholder and can be used to further configure the input:
 
 .. code-block:: python
 
@@ -75,7 +78,7 @@ The *$img1* is an arbitrary placeholder and can be used to further configure the
     inputs = Input(key="img1", url="http://gateway.prod.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66b37374b6a632e1f39b3058")
     config = Config(key="img1", options=ConfigOption(uncompress=True, sub_path="xfdumanifest.xml"))
 
-See that `img1` has been used as the key to configure the input. The dollar sign is only required in the graph.
+Note that `img1` has been used as the key to configure the input. The dollar sign is only required in the graph.
 
 The `url` parameter is a valid WEkEO HDA download link and can be retrieved by using the HDA Python client:
 
@@ -102,7 +105,7 @@ The `url` parameter is a valid WEkEO HDA download link and can be retrieved by u
 
 The :class:`eocanvas.api.Config` object allows you to set two extra options:
 
-#. whether the product must be decompressed before it is passed to Snap
+#. whether the product must be decompressed before it is passed to SNAP
 #. if uncompressed, what is the sub-path of the actual input file
 
 Once all the inputs are ready, you can instantiate a process class:
