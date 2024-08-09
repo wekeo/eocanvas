@@ -2037,8 +2037,9 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 
 [extras]
 docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
+optional = []
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "4601c2e541681c16d69c5d1eadf471d604e10ede704f0faa527dd1e92b5ae90d"
+content-hash = "f627144ad319d7130bba1c823bf5bd23eaa129c8cb0f3cbe94d322470c6aab01"

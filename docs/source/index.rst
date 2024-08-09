@@ -1,15 +1,14 @@
 Welcome to WEkEO EO Canvas documentation!
 =================================================================
 
-This package provides a fully compliant Python 3 client that can be used to interact with the **WEkEO Serverless Functions API**.
+EO Canvas provides a fully compliant Python 3 client that can be used to interact with the **WEkEO Serverless Functions API**.
 
-HDA is a RESTful interface allowing users to search and download WEkEO datasets.
-
-Documentation about its usage can be found at `WEkEO website <https://www.wekeo.eu/docs/data-access>`_.
+WEkEO Serverless Functions service exposes a RESTful interface allowing users to remotely execute ESA Snap or EUMETSAT Datatailor processing.
 
 Check out the :doc:`usage </usage>` section for further information, including
 how to :doc:`install </installation>` the project.
 
+A Jupyter Notebook is available in the `demo` directory, showing many of the available functionalities.
 
 Requirements
 ------------
