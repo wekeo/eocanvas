@@ -274,9 +274,10 @@ class Process:
     def submit(self) -> Job:
         return self.api.exec_process(self)
 
-    def run(self):
-        job = self.submit()
-        return JobRunner(job).run()
+    def run(self, job: Optional[Job] = None, download_dir: Optional[str] = None):
+        if job is None:
+            job = self.submit()
+        return JobRunner(job).run(download_dir)
 
 
 class JobRunner:

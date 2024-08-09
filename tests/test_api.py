@@ -5,6 +5,8 @@ from eocanvas import API
 from eocanvas.api import Job, JobRunner, Process
 from eocanvas.config import URLs
 from eocanvas.exceptions import JobFailed
+from eocanvas.processes import SnapProcess
+from eocanvas.snap.graph import Graph
 
 PROCESSES_RESPONSE = [
     {
@@ -338,3 +340,41 @@ def test_job_runner(mock_api, tmp_path):
     job = api.get_job(job_id=JOBS_RESPONSE["jobs"][1]["jobID"])
     runner = JobRunner(job)
     runner.run(tmp_path)
+
+
+def test_process_run(mock_api, tmp_path):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("job_detail", job_id=JOBS_RESPONSE["jobs"][1]["jobID"]),
+        json=JOBS_RESPONSE["jobs"][1],
+        status=200,
+    )
+    mock_api.add(
+        responses.GET,
+        url=urls.get("job_results", job_id=JOBS_RESPONSE["jobs"][1]["jobID"]),
+        json=JOBS_RESULTS_RESPONSE,
+        status=200,
+    )
+    mock_api.add(
+        responses.POST,
+        url=urls.get("process_execution", process_id="snap-function"),
+        json={
+            "processID": "snap-function",
+            "type": "process",
+            "jobID": JOBS_RESPONSE["jobs"][1]["jobID"],
+            "status": "successful",
+            "started": "2024-08-01:13.23.46",
+        },
+        status=200,
+    )
+    for result in JOBS_RESULTS_RESPONSE:
+        mock_api.add(
+            responses.GET,
+            url=urls.get("download", result_href=result["href"]),
+            status=200,
+        )
+
+    g = Graph.from_text(b'<?xml version="1.0"?><data></data>')
+    p = SnapProcess(snap_graph=g)
+    p.run(download_dir=tmp_path)

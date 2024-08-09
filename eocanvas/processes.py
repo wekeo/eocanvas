@@ -16,6 +16,7 @@ class SnapParams:
 @dataclass
 class SnapProcess(Process, SnapParams):
     def __post_init__(self):
+        super().__post_init__()
         if self.process_id is None:
             self.process_id = "snap-function"
 
@@ -47,6 +48,7 @@ class DataTailorParams:
 @dataclass
 class DataTailorProcess(Process, DataTailorParams):
     def __post_init__(self):
+        super().__post_init__()
         if self.process_id is None:
             self.process_id = "dataTailor"
 
