@@ -140,7 +140,10 @@ class API(metaclass=Singleton):
         response = get(url, auth=self.auth)
         return [self._build_result(data) for data in response.json()]
 
-    def download_result(self, result: Result, download_dir: str = "."):
+    def download_result(self, result: Result, download_dir: Optional[str] = None):
+        if download_dir is None:
+            download_dir = "."
+
         os.makedirs(download_dir, exist_ok=True)
         url = self.urls.get("download", result_href=result.href)
         response = get(url, auth=self.auth, stream=True)
