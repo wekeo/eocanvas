@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .api import Config, Input, Process
+from .datatailor.chain import Chain
 from .snap.graph import Graph
 
 
@@ -41,7 +42,7 @@ class SnapProcess(Process, SnapParams):
 
 @dataclass
 class DataTailorParams:
-    epct_chain: str  # TODO
+    epct_chain: Chain
     epct_input: List[Input] = field(default_factory=list)
 
 
@@ -58,7 +59,7 @@ class DataTailorProcess(Process, DataTailorParams):
     def prepare_inputs(self):
         return {
             "inputs": {
-                "epct_chain": self.epct_chain,  # TODO
+                "epct_chain": self.epct_chain.b64encode(),
                 "epct_input": json.dumps([i.asdict() for i in self.epct_input]),
             },
             "outputs": {},

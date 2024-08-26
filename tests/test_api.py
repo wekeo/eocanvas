@@ -1,8 +1,11 @@
+from unittest.mock import patch
+
 import pytest
 import responses
 
 from eocanvas import API
 from eocanvas.api import Job, JobRunner, Process
+from eocanvas.auth import Credentials
 from eocanvas.config import URLs
 from eocanvas.exceptions import JobFailed
 from eocanvas.processes import SnapProcess
@@ -156,7 +159,13 @@ def mock_api():
         yield rsps
 
 
-def test_get_processes(mock_api):
+@pytest.fixture
+def mock_credentials():
+    with patch.object(Credentials, "load", return_value=Credentials("abc", "abc")) as mock:
+        yield mock
+
+
+def test_get_processes(mock_api, mock_credentials):
     urls = URLs()
     mock_api.add(
         responses.GET,
