@@ -39,4 +39,4 @@ class JobFailed(EOCanvasError):
 
 
 class InvalidChainError(EOCanvasError):
-    """Exception on invalid YAML file for a DataTailor Chain."""
+    """Exception on invalid YAML file for a Data Tailor Chain."""

@@ -5,7 +5,7 @@ As mentioned in the :doc:`quickstart </quickstart>` page, EO Canvas allows you t
 to interact with the API in a more direct way.
 
 The two fundamental concepts of the Serverless Functions service are *processes* and *jobs*.
-A *process* describes either a SNAP or a DataTailor computation.
+A *process* describes either a SNAP or a Data Tailor computation.
 A *job*, on the other hand, is a submission of a process to the API, and it's used to keep track of
 its state, to retrieve the application logs and, finally, to download the results.
 
@@ -25,11 +25,11 @@ To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
 The available processes are predefined. New tools or custom functions might be added in future.
 
-Process inputs must be configured before submitting them. **SNAP** and **DataTailor** has similar but different sets of inputs.
+Process inputs must be configured before submitting them. **SNAP** and **Data Tailor** has similar but different sets of inputs.
 
 SNAP
 ----
-**SNAP** processing is configured through an XML object called a `Graph`. Such graph contains nodes for the inputs.
+A **SNAP** process is configured through an XML object called a `Graph`. Such graph contains nodes for the inputs.
 
 Please refer to `official SNAP documentation <https://step.esa.int/main/doc/online-help/>`_ for further details.
 
@@ -141,3 +141,51 @@ By default, results are downloaded in the current directory. A different one can
     process.run(dowload_dir="mydir")
 
 
+Data Tailor
+-----------
+A **Data Tailor** process is configured through an YAML object called a `Chain`.
+
+Please refer to `official Data Tailor documentation <https://user.eumetsat.int/resources/user-guides/data-tailor-standalone-guide>`_ for further details.
+
+Like SNAP, inputs are defined as placeholders and then passed in through :class:`eocanvas.api.Input` objects.
+
+**EO Canvas** handles Data Tailor chains through a lightweight class taken from the `official EUMDAC library <https://user.eumetsat.int/resources/user-guides/eumetsat-data-access-client-eumdac-guide>`_
+The :class:`eocanvas.datatailor.Chain` class can be instantiated from a file, or from a plain Python dictionary:
+
+
+.. code-block:: python
+
+    from eocanvas.datatailor import Chain
+
+    # Load it from a file
+    chain = Chain.from_file("olci_resample.yaml")
+
+    # Load it from a dictionary
+    d = {
+        'product': 'OLL2WFR',
+        'filter': {'bands': ['chl_nn']},
+        'projection': 'geographic',
+        'resample_resolution': [0.003, 0.003],
+        'format': 'netcdf4'
+    }
+    chain = Chain(**d)
+
+The inputs can be set similarly to SNAP
+
+.. code-block:: python
+
+    inputs = Input(key="img1", url="http://gateway.impl.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
+
+Again, the url can be retrieved through the HDA Client as explained above.
+Once all inputs are set, you'd call a `DataTailorProcess` just as SNAP:
+
+
+.. code-block:: python
+
+    from eocanvas.processes import DataTailorProcess
+
+    process = DataTailorProcess(epct_chain=chain, epct_input=inputs)
+    process.run()
+
+
+Note that Data Tailor process does not accept a configuration object.

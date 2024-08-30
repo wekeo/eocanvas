@@ -3,7 +3,7 @@ Welcome to WEkEO EO Canvas documentation!
 
 EO Canvas provides a fully compliant Python 3 client that can be used to interact with the **WEkEO Serverless Functions API**.
 
-WEkEO Serverless Functions service exposes a RESTful interface allowing users to remotely execute ESA SNAP or EUMETSAT DataTailor processing.
+WEkEO Serverless Functions service exposes a RESTful interface allowing users to remotely execute ESA SNAP or EUMETSAT Data Tailor processing.
 
 Check out the :doc:`usage </usage>` section for further information, including
 how to :doc:`install </installation>` the project.

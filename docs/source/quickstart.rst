@@ -32,7 +32,7 @@ SNAP
     # This will submit the process to the API, wait for its completion and download the results
     process.run()
 
-DataTailor
+Data Tailor
 ----------
 .. code:: python
 
@@ -40,7 +40,7 @@ DataTailor
     from eocanvas.processes import DataTailorProcess
     from eocanvas.datatailor.chain import Chain
 
-    # Load the DataTailor chain from a local file
+    # Load the Data Tailor chain from a local file
     chain = Chain.from_file("olci_resample.yaml")
 
     # The url is a valid WEkEO download URL. It can be retrieved using the HDA Python client
