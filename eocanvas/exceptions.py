@@ -36,3 +36,7 @@ class SnapOperatorNotFound(EOCanvasError):
 
 class JobFailed(EOCanvasError):
     """Exception on a job that returns failed status."""
+
+
+class InvalidChainError(EOCanvasError):
+    """Exception on invalid YAML file for a DataTailor Chain."""

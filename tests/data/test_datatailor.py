@@ -17,6 +17,6 @@ def test_chain_load():
 
 
 def test_chain_load_invalid():
-    filename = f"{os.path.dirname(__file__)}/data/chain_invalid.yaml"
+    filename = f"{os.path.dirname(__file__)}/data/chain.yaml"
     with pytest.raises(InvalidChainError):
         Chain.from_file(filename)

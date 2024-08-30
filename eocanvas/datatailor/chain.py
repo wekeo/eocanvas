@@ -1,6 +1,7 @@
 """Data Tailor classes.
 
-Most of the code has been taken from the official EUMDAC library.
+Most of the code has been taken from the official EUMDAC library
+(https://pypi.org/project/eumdac/).
 Changes have been made to the Chain class to create instances from a yaml file and
 to encode it to base64 representation as required by the API.
 """
@@ -11,6 +12,8 @@ from dataclasses import asdict, dataclass
 from typing import Any, Optional, Union
 
 import yaml
+
+from eocanvas.exceptions import InvalidChainError
 
 if sys.version_info < (3, 9):
     from typing import MutableMapping
@@ -124,7 +127,10 @@ class Chain(AsDictMixin):
     @classmethod
     def from_file(cls, filepath: str) -> "Chain":
         with open(filepath) as f:
-            return cls(**yaml.safe_load(f))
+            try:
+                return cls(**yaml.safe_load(f))
+            except TypeError as exc:
+                raise InvalidChainError(f"Invalid chain file: {exc}")
 
     def b64encode(self) -> str:
         return b64encode(yaml.dump(self.asdict()).encode()).decode()
