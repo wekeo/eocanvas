@@ -5,9 +5,9 @@ As mentioned in the :doc:`quickstart </quickstart>` page, EO Canvas allows you t
 to interact with the API in a more direct way.
 
 The two fundamental concepts of the Serverless Functions service are *processes* and *jobs*.
-A *process* describes either a SNAP or a Data Tailor computation.
+A *process* describes either a SNAP or a DataTailor computation.
 A *job*, on the other hand, is a submission of a process to the API, and it's used to keep track of
-its state, to retrieve the application logs and, finally, to retrieve the results.
+its state, to retrieve the application logs and, finally, to download the results.
 
 To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
@@ -25,7 +25,7 @@ To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
 The available processes are predefined. New tools or custom functions might be added in future.
 
-Process inputs must be configured before submitting them. **SNAP** and **Data Tailor** has similar but different sets of inputs.
+Process inputs must be configured before submitting them. **SNAP** and **DataTailor** has similar but different sets of inputs.
 
 SNAP
 ----
