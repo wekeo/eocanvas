@@ -1,5 +1,5 @@
-token_url: https://gateway.impl.wekeo2.eu/hda-broker/gettoken
-base_url: https://gateway.impl.wekeo2.eu/serverless
+token_url: https://gateway.prod.wekeo2.eu/hda-broker/gettoken
+base_url: https://gateway.prod.wekeo2.eu/serverless
 endpoints:
   process_list: /processes
   process_detail: /processes/{process_id}

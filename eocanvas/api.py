@@ -11,7 +11,7 @@ from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
 from .exceptions import JobFailed
 from .http import get, post
-from .logging import logger, setup_logger
+from .logging import logger
 from .utils import Singleton
 
 
@@ -31,23 +31,25 @@ class API(metaclass=Singleton):
 
     Attributes:
         urls: The :class:`eocanvas.config.URLs` object that maps all the API endpoints
-        token: The authentication :class:`eocanvas.auth.OAuthToken` object
+        credentials: A :class:`eocanvas.auth.Credentials` object with username and password
     """
 
     def __init__(
         self,
         urls: Optional[URLs] = None,
-        token: Optional[OAuthToken] = None,
+        credentials: Optional[Credentials] = None,
         log_level: int = INFO,
     ):
         """"""
-        setup_logger(log_level)
+        logger.setLevel(log_level)
 
         if urls is None:
             urls = URLs()
 
-        if token is None:
-            token = OAuthToken(url=urls.token_url, credentials=Credentials.load())
+        if credentials is None:
+            credentials = Credentials.load()
+
+        token = OAuthToken(url=urls.token_url, credentials=credentials)
 
         self.urls = urls
         self.auth = HTTPOAuth2(token)
@@ -147,7 +149,8 @@ class API(metaclass=Singleton):
         os.makedirs(download_dir, exist_ok=True)
         url = self.urls.get("download", result_href=result.href)
         response = get(url, auth=self.auth, stream=True)
-        download_path = os.path.join(download_dir, result.title)
+        filename = result.title.split("/")[-1]
+        download_path = os.path.join(download_dir, filename)
         logger.info(f"Downloading {download_path}")
         with open(download_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=1024):
@@ -288,10 +291,11 @@ class JobRunner:
         self.job = job
 
     def run(self, download_dir: Optional[str] = None):
-        sleep = 1
+        sleep = 10
         status = self.job.status
         while status != "successful":
-            logger.info(f"Job: {self.job.job_id} - Status: {status}")
+            now = datetime.now().isoformat()
+            logger.info(f"Job: {self.job.job_id} - Status: {status} at {now}")
             if status == "failed":
                 raise JobFailed(
                     f"Job {self.job.job_id} failed. Try checking the logs for more info."
