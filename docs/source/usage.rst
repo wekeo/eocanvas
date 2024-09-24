@@ -13,10 +13,13 @@ To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
 .. code-block:: python
 
-    from eocanvas import API
+    from eocanvas import API, Credentials
 
     # Without any argument, this will automatically load your credentials from the ~/.hdarc file
     api = API()
+
+    # but it's possible to pass username and password on the fly as well
+    api = API(Credentials("[username]", "[password]"))
 
     processes = api.get_processes()
     print(processes)
@@ -35,7 +38,7 @@ Please refer to `official SNAP documentation <https://step.esa.int/main/doc/onli
 
 Since SNAP is being executed remotely, those inputs are defined as placeholders and then passed in through :class:`eocanvas.api.Input` objects.
 
-Extra configuration can be added using the :class:`eocanvas.api.Option` class.
+Extra configuration can be added using the :class:`eocanvas.api.ConfigOption` class.
 
 **EO Canvas** handles graphs through an embedded version of `Snapista <https://snap-contrib.github.io/snapista/>`_.
 *Snapista* requires a local SNAP instance to work, to which it can submit the graph.

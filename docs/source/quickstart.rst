@@ -12,6 +12,10 @@ This is described more in depth in the  :doc:`usage </usage>` page.
 
 Many of the following examples are also available in the `demo/notebook.ipynb` file.
 
+
+    .. note::
+        Further examples will be available at the `WEkEO4Data repository <https://github.com/wekeo/wekeo4data/tree/main/wekeo-eocanvas>`_.
+
 SNAP
 ----
 .. code:: python
@@ -33,7 +37,7 @@ SNAP
     process.run()
 
 Data Tailor
-----------
+-----------
 .. code:: python
 
     from eocanvas.api import Input, Config, ConfigOption
