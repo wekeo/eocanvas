@@ -95,13 +95,13 @@ jobs:
           python -m pip install twine
           twine upload dist/*
 
-      - name: Publish to Conda
-        env:
-          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
-        run: |
-          python -m pip install conda-build anaconda-client
-          conda config --set anaconda_upload yes
-          conda-build .
+#      - name: Publish to Conda
+#        env:
+#          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
+#        run: |
+#          python -m pip install conda-build anaconda-client
+#          conda config --set anaconda_upload yes
+#          conda-build .
 
       - name: Build documentation
         run: |
