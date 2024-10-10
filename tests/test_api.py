@@ -4,7 +4,7 @@ import pytest
 import responses
 
 from eocanvas import API
-from eocanvas.api import Job, JobRunner, Process
+from eocanvas.api import Job, JobRunner, Key, Process
 from eocanvas.auth import Credentials
 from eocanvas.config import URLs
 from eocanvas.exceptions import JobFailed
@@ -135,6 +135,30 @@ JOBS_LOGS_RESPONSE = [
     {
         "timestamp": "2024-12-06T15:31:45.123456789+00:00",
         "message": "message3",
+    },
+]
+
+
+KEYS_RESPONSE = [
+    {
+        "name": "eodata2",
+        "creationDate": "2024-09-19 13:43:02",
+        "expirationDate": None,
+        "description": "eodata key",
+        "expireSeconds": 0,
+        "owner": "jlgauthier",
+        "type": "S3",
+        "public": True
+    },
+    {
+        "name": "eodata",
+        "creationDate": "2024-09-19 13:43:02",
+        "expirationDate": None,
+        "description": "eodata key",
+        "expireSeconds": 150,
+        "owner": "jlgauthier",
+        "type": "S3",
+        "public": False
     },
 ]
 
@@ -387,3 +411,49 @@ def test_process_run(mock_api, tmp_path):
     g = Graph.from_text(b'<?xml version="1.0"?><data></data>')
     p = SnapProcess(snap_graph=g)
     p.run(download_dir=tmp_path)
+
+
+def test_get_keys(mock_api, mock_credentials):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("key_list"),
+        json=KEYS_RESPONSE,
+        status=200,
+    )
+
+    api = API()
+    keys = api.get_keys()
+    assert len(keys) == 2
+    assert keys[0].name == "eodata2"
+    assert keys[1].name == "eodata"
+
+
+def test_get_key(mock_api):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("key_detail", key_id=KEYS_RESPONSE[0]["name"]),
+        json=KEYS_RESPONSE[0],
+        status=200,
+    )
+
+    api = API()
+    key = api.get_key(KEYS_RESPONSE[0]["name"])
+    assert key.name == "eodata2"
+
+
+def test_create_key(mock_api):
+    key = Key(name="fake_key", type_="S3", description="test")
+    urls = URLs()
+    mock_api.add(
+        responses.POST,
+        url=urls.get("key_list"),
+        body="",
+        status=201,
+    )
+
+    api = API()
+    job = api.create_key(key)
+    assert job.job_id == "93fc7efb-4860-5de1-bd75-ca850685bed4"
+    assert job.status == "accepted"
