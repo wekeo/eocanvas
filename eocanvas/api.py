@@ -5,12 +5,12 @@ import time
 from dataclasses import dataclass, fields
 from datetime import datetime
 from logging import INFO
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
 from .exceptions import JobFailed
-from .http import get, post
+from .http import delete, get, post
 from .logging import logger
 from .utils import Singleton
 
@@ -53,6 +53,32 @@ class API(metaclass=Singleton):
 
         self.urls = urls
         self.auth = HTTPOAuth2(token)
+
+    def get_public_key(self, key_id: str) -> str:
+        url = self.urls.get("key_detail", key_id="cert/public")
+        response = get(url, auth=self.auth)
+        return response.content
+
+    def get_key(self, key_id: str) -> Key:
+        url = self.urls.get("key_detail", key_id=key_id)
+        response = get(url, auth=self.auth)
+        return self._build_key(response.json())
+
+    def get_keys(self) -> List[Key]:
+        url = self.urls.get("key_list")
+        response = get(url, auth=self.auth)
+        return [self._build_key(data) for data in response.json()]
+
+    def create_key(self, key):
+        url = self.urls.get("key_list")
+        post(url, json=key, auth=self.auth) # TODO encode key data
+        # The API response is empty. We return a minimal Key instance
+        return key
+
+    def delete_key(self, key_id: str):
+        url = self.urls.get("key_detail", key_id=key_id)
+        response = delete(url, auth=self.auth)
+        return response
 
     def get_process(self, process_id: str) -> Process:
         """Gets the details of a process.
@@ -157,6 +183,17 @@ class API(metaclass=Singleton):
                 if chunk:
                     f.write(chunk)
 
+    def _build_key(self, data) -> Key:
+        mapping = {
+            "creationDate": "creation_date",
+            "expirationDate": "expiration_date",
+            "expireSeconds": "expire_seconds",
+            "type": "type_"
+        }
+        data = filter_dict_for_dataclass(Key, transform_data(data, mapping))
+        data["api"] = self
+        return Key(**data)
+
     def _build_process(self, data) -> Process:
         mapping = {"processId": "process_id"}
         data = filter_dict_for_dataclass(Process, transform_data(data, mapping))
@@ -186,9 +223,17 @@ class API(metaclass=Singleton):
 class Input:
     key: str
     url: str
+    keystore: Optional[Union[str, Key]] = None
 
-    def asdict(self):
-        return {self.key: self.url}
+    def asdict(self) -> Dict:
+        value = {self.key: self.url}
+        if self.keystore is not None:
+            if isinstance(self.keystore, str):
+                value["schema"] = f"keystore://{self.keystore}"
+            else:
+                value["schema"] = f"keystore://{self.keystore.name}"
+
+        return value
 
 
 @dataclass
@@ -196,7 +241,7 @@ class ConfigOption:
     uncompress: bool
     sub_path: str
 
-    def asdict(self):
+    def asdict(self) -> Dict:
         return {"uncompress": self.uncompress, "subPath": self.sub_path}
 
 
@@ -260,6 +305,31 @@ class LogEntry:
 
 
 @dataclass
+class Key:
+    """A key object as returned by the API"""
+
+    name: str
+    type_: str
+    description: str
+    creation_date: Optional[str] = None
+    owner: Optional[str] = None
+    public: Optional[bool] = False
+    api: Optional[API] = None
+    expiration_date: Optional[str] = None
+    expire_seconds: Optional[int] = 0
+
+    def __post_init__(self):
+        if self.api is None:
+            self.api = API()
+
+    def create(self) -> Key:
+        return self.api.create_key(self)
+
+    def delete(self):
+        return self.api.delete_key(self.name)
+
+
+@dataclass
 class Process:
     """A process defines either a SNAP or a Datatailor function."""
 
@@ -269,13 +339,34 @@ class Process:
     title: Optional[str] = None
     description: Optional[str] = None
     inputs: Optional[Any] = None
+    output: Optional[Union[str, Key]] = None
 
     def __post_init__(self):
         if self.api is None:
             self.api = API()
 
-    def prepare_inputs(self) -> Any:
-        return {}
+    def prepare_inputs(self) -> Dict:
+        inputs = {
+            "inputs": {},  # To be defined in subclasses
+            "outputs": {},
+            "response": "raw",
+            "subscriber": None,
+        }
+        if self.output is not None:
+            if isinstance(self.output, str):
+                keystore = self.output
+            else:
+                keystore = self.output.name
+
+            inputs["outputs"] = {
+                "output": {
+                    "format": {
+                        "schema": f"keystore://{keystore}"
+                    }
+                }
+            }
+
+        return inputs
 
     def submit(self) -> Job:
         return self.api.exec_process(self)

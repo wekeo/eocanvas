@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass, field
-from typing import List
+from typing import Dict, List
 
 from .api import Config, Input, Process
 from .datatailor.chain import Chain
@@ -27,17 +27,15 @@ class SnapProcess(Process, SnapParams):
         if not isinstance(self.eo_input, list):
             self.eo_input = [self.eo_input]
 
-    def prepare_inputs(self):
-        return {
-            "inputs": {
-                "snap_graph": self.snap_graph.b64encode(),
-                "eo_input": json.dumps([i.asdict() for i in self.eo_input]),
-                "eo_config": json.dumps([c.asdict() for c in self.eo_config]),
-            },
-            "outputs": {},
-            "response": "raw",
-            "subscriber": None,
+    def prepare_inputs(self) -> Dict:
+        inputs = super().prepare_inputs()
+        inputs["inputs"] = {
+            "snap_graph": self.snap_graph.b64encode(),
+            "eo_input": json.dumps([i.asdict() for i in self.eo_input]),
+            "eo_config": json.dumps([c.asdict() for c in self.eo_config]),
         }
+
+        return inputs
 
 
 @dataclass
@@ -56,13 +54,11 @@ class DataTailorProcess(Process, DataTailorParams):
         if not isinstance(self.epct_input, list):
             self.epct_input = [self.epct_input]
 
-    def prepare_inputs(self):
-        return {
-            "inputs": {
-                "epct_chain": self.epct_chain.b64encode(),
-                "epct_input": json.dumps([i.asdict() for i in self.epct_input]),
-            },
-            "outputs": {},
-            "response": "raw",
-            "subscriber": None,
+    def prepare_inputs(self) -> Dict:
+        inputs = super().prepare_inputs()
+        inputs["inputs"] = {
+            "epct_chain": self.epct_chain.b64encode(),
+            "epct_input": json.dumps([i.asdict() for i in self.epct_input]),
         }
+
+        return inputs
