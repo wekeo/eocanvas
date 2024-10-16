@@ -40,3 +40,11 @@ class JobFailed(EOCanvasError):
 
 class InvalidChainError(EOCanvasError):
     """Exception on invalid YAML file for a Data Tailor Chain."""
+
+
+class NotDownloadableError(EOCanvasError):
+    """Exception on results that are not downloadable, coming from an external source"""
+
+
+class UnknownResultTypeError(EOCanvasError):
+    """Results of unknown rel type."""

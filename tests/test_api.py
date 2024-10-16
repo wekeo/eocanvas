@@ -4,7 +4,7 @@ import pytest
 import responses
 
 from eocanvas import API
-from eocanvas.api import Job, JobRunner, Key, Process
+from eocanvas.api import Job, JobRunner, Key, Process, S3KeyConfig, WebDavKeyConfig
 from eocanvas.auth import Credentials
 from eocanvas.config import URLs
 from eocanvas.exceptions import JobFailed
@@ -148,7 +148,7 @@ KEYS_RESPONSE = [
         "expireSeconds": 0,
         "owner": "jlgauthier",
         "type": "S3",
-        "public": True
+        "public": True,
     },
     {
         "name": "eodata",
@@ -158,9 +158,25 @@ KEYS_RESPONSE = [
         "expireSeconds": 150,
         "owner": "jlgauthier",
         "type": "S3",
-        "public": False
+        "public": False,
     },
 ]
+
+
+TEST_PUBLIC_KEY_PEM = b"""
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnYQFvD8MZ2NiGtf7OEqn
+gVZ0mkvDzoShIWk7y5sA2WtLHoFTIN93Gj8VtuGa6z1fnTxyw+u+TNgHRGQBgHT4
+LQf7YlfcLVNRFB4VzTFVjb2IjJZdg7gkp8q4C1+e7LjRkXkt4pJkkhSfV5PqeS3E
+sImE6BopLZBzKkqElZ4woUgEDZ5EpICLPm+eQk0sq+gjHiPpEcRniNyRi1fPAFSH
+DRUgFNyU3TsIrYq5DdTCJcyAHo/JUNIsvjC+ArVnD/m0t8g6Q50vhA9PQfSnGBL6
+QwPZCxTQSAprhgsgOBUMUpFm2RnFob/YiFFu4Udo5EkN1PVJZuBo4ZpTPNdI1IwB
+DQIDAQAB
+-----END PUBLIC KEY-----
+"""
+
+
+PUBLIC_KEY_RESPONSE = TEST_PUBLIC_KEY_PEM
 
 
 @pytest.fixture
@@ -178,6 +194,12 @@ def mock_api():
                 "token_type": "Bearer",
                 "expires_in": 1744,
             },
+            status=200,
+        )
+        rsps.add(
+            responses.GET,
+            url=urls.get("key_detail", key_id="cert/public"),
+            body=TEST_PUBLIC_KEY_PEM,
             status=200,
         )
         yield rsps
@@ -429,6 +451,20 @@ def test_get_keys(mock_api, mock_credentials):
     assert keys[1].name == "eodata"
 
 
+def test_get_public_key(mock_api):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("key_detail", key_id="cert/public"),
+        body=PUBLIC_KEY_RESPONSE,
+        status=200,
+    )
+
+    api = API()
+    public_key = api.get_public_key()
+    assert public_key == TEST_PUBLIC_KEY_PEM
+
+
 def test_get_key(mock_api):
     urls = URLs()
     mock_api.add(
@@ -443,8 +479,56 @@ def test_get_key(mock_api):
     assert key.name == "eodata2"
 
 
-def test_create_key(mock_api):
-    key = Key(name="fake_key", type_="S3", description="test")
+def test_webdav_encode(mock_api):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("key_detail", key_id="cert/public"),
+        body=PUBLIC_KEY_RESPONSE,
+        status=200,
+    )
+    data = WebDavKeyConfig(username="abc", endpoint="https://", password="abc")
+    encoded = data.encode()
+    assert isinstance(encoded, str)
+
+
+def test_s3_encode(mock_api):
+    urls = URLs()
+    mock_api.add(
+        responses.GET,
+        url=urls.get("key_detail", key_id="cert/public"),
+        body=PUBLIC_KEY_RESPONSE,
+        status=200,
+    )
+    data = S3KeyConfig(
+        access_key="abc", bucket="abc", endpoint="https://", region="abc", secret_key="abc"
+    )
+    encoded = data.encode()
+    assert isinstance(encoded, str)
+
+
+def test_create_s3_key(mock_api):
+    config = S3KeyConfig(
+        access_key="abc", bucket="abc", endpoint="https://", region="abc", secret_key="abc"
+    )
+    key = Key(name="fake_key", description="test", config=config)
+    urls = URLs()
+    mock_api.add(
+        responses.POST,
+        url=urls.get("key_list"),
+        body="",
+        status=201,
+    )
+
+    key = key.create()
+    assert key.name == "fake_key"
+
+
+def test_create_s3_key_from_api(mock_api):
+    config = S3KeyConfig(
+        access_key="abc", bucket="abc", endpoint="https://", region="abc", secret_key="abc"
+    )
+    key = Key(name="fake_key", description="test", config=config)
     urls = URLs()
     mock_api.add(
         responses.POST,
@@ -454,6 +538,41 @@ def test_create_key(mock_api):
     )
 
     api = API()
-    job = api.create_key(key)
-    assert job.job_id == "93fc7efb-4860-5de1-bd75-ca850685bed4"
-    assert job.status == "accepted"
+    key = api.create_key(key)
+    assert key.name == "fake_key"
+
+
+def test_create_webdav_key(mock_api):
+    config = WebDavKeyConfig(username="abc", endpoint="https://", password="abc")
+    key = Key(name="fake_key", description="test", config=config)
+    urls = URLs()
+    mock_api.add(
+        responses.POST,
+        url=urls.get("key_list"),
+        body="",
+        status=201,
+    )
+
+    key = key.create()
+    assert key.name == "fake_key"
+
+
+def test_create_webdav_key_from_api(mock_api):
+    config = WebDavKeyConfig(username="abc", endpoint="https://", password="abc")
+    key = Key(name="fake_key", description="test", config=config)
+    urls = URLs()
+    mock_api.add(
+        responses.POST,
+        url=urls.get("key_list"),
+        body="",
+        status=201,
+    )
+
+    api = API()
+    key = api.create_key(key)
+    assert key.name == "fake_key"
+
+
+def test_invalid_key_type():
+    with pytest.raises(ValueError):
+        Key(name="test", type_="test")

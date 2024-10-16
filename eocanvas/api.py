@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import json
 import os
 import time
 from dataclasses import dataclass, fields
@@ -9,8 +11,9 @@ from typing import Any, Dict, List, Optional, Union
 
 from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
-from .exceptions import JobFailed
+from .exceptions import JobFailed, NotDownloadableError, UnknownResultTypeError
 from .http import delete, get, post
+from .keystore import encrypt_data, load_public_key
 from .logging import logger
 from .utils import Singleton
 
@@ -54,7 +57,7 @@ class API(metaclass=Singleton):
         self.urls = urls
         self.auth = HTTPOAuth2(token)
 
-    def get_public_key(self, key_id: str) -> str:
+    def get_public_key(self) -> str:
         url = self.urls.get("key_detail", key_id="cert/public")
         response = get(url, auth=self.auth)
         return response.content
@@ -69,16 +72,15 @@ class API(metaclass=Singleton):
         response = get(url, auth=self.auth)
         return [self._build_key(data) for data in response.json()]
 
-    def create_key(self, key):
+    def create_key(self, key: Key) -> Key:
         url = self.urls.get("key_list")
-        post(url, json=key, auth=self.auth) # TODO encode key data
-        # The API response is empty. We return a minimal Key instance
+        post(url, json=key.asdict(), auth=self.auth)
+        # The API response is empty. We return the key itself.
         return key
 
-    def delete_key(self, key_id: str):
+    def delete_key(self, key_id: str) -> None:
         url = self.urls.get("key_detail", key_id=key_id)
-        response = delete(url, auth=self.auth)
-        return response
+        delete(url, auth=self.auth)
 
     def get_process(self, process_id: str) -> Process:
         """Gets the details of a process.
@@ -188,7 +190,7 @@ class API(metaclass=Singleton):
             "creationDate": "creation_date",
             "expirationDate": "expiration_date",
             "expireSeconds": "expire_seconds",
-            "type": "type_"
+            "type": "type_",
         }
         data = filter_dict_for_dataclass(Key, transform_data(data, mapping))
         data["api"] = self
@@ -295,7 +297,14 @@ class Result:
     rel: str = "result"
 
     def download(self, download_dir: Optional[str] = None):
-        return self.api.download_result(self, download_dir)
+        if self.rel == "result":
+            return self.api.download_result(self, download_dir)
+        elif self.rel == "enclosure":
+            raise NotDownloadableError(
+                "External reference to the result, not served by this service."
+            )
+        else:
+            raise UnknownResultTypeError(f"rel {self.rel} not known")
 
 
 @dataclass
@@ -309,8 +318,9 @@ class Key:
     """A key object as returned by the API"""
 
     name: str
-    type_: str
-    description: str
+    type_: Optional[str] = None
+    config: Optional[KeyConfig] = None
+    description: Optional[str] = None
     creation_date: Optional[str] = None
     owner: Optional[str] = None
     public: Optional[bool] = False
@@ -319,14 +329,103 @@ class Key:
     expire_seconds: Optional[int] = 0
 
     def __post_init__(self):
+        if self.config is not None:
+            if isinstance(self.config, S3KeyConfig):
+                self.type_ = "S3"
+            elif isinstance(self.config, WebDavKeyConfig):
+                self.type_ = "WEBDAV"
+
+        if self.type_ is not None and self.type_ not in ("S3", "WEBDAV"):
+            raise ValueError("Type must be either 'S3' or 'WEBDAV'")
+
         if self.api is None:
             self.api = API()
 
+    def asdict(self) -> Dict:
+        data = {
+            f"{self.name}": {
+                "type": self.type_,
+                "expire": self.expire_seconds or 3600,
+                "public": self.public,
+                "description": self.description or self.name,
+                "data": self.config.encode(),
+            }
+        }
+        return data
+
     def create(self) -> Key:
+        if self.config is None:
+            raise ValueError("Cannot create a key without config")
+
         return self.api.create_key(self)
 
     def delete(self):
         return self.api.delete_key(self.name)
+
+
+@dataclass
+class _APIParam:
+    """
+    A simple dataclass with an optional api parameter.
+    This is used to avoid `non-default argument 'foo' follows default argument`
+    """
+
+    api: Optional[API] = None
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.api is None:
+            self.api = API()
+
+
+@dataclass
+class KeyConfig:
+    """A configuration object that encrypt either an S3 or a WEBDAV key"""
+
+    def asdict(self):
+        return {f.name: getattr(self, f.name) for f in fields(self) if f.name != "api"}
+
+    def encode(self) -> str:
+        public_key = load_public_key(self.api.get_public_key())
+        encrypted = encrypt_data(json.dumps(self.asdict()).encode(), public_key)
+        encoded = base64.b64encode(encrypted).decode("utf-8")
+        return encoded
+
+
+@dataclass
+class _S3KeyParams:
+
+    secret_key: str
+    access_key: str
+    bucket: str
+    endpoint: str
+    region: str
+
+    def __post_init__(self):
+        if not self.endpoint.startswith("https://"):
+            raise ValueError("Endpoint does not look like a URL")
+
+
+@dataclass
+class _WebDavKeyParams:
+
+    endpoint: str
+    username: str
+    password: str
+
+    def __post_init__(self):
+        if not self.endpoint.startswith("https://"):
+            raise ValueError("Endpoint does not look like a URL")
+
+
+@dataclass
+class S3KeyConfig(KeyConfig, _APIParam, _S3KeyParams):
+    """A configuration for S3-like keys."""
+
+
+@dataclass
+class WebDavKeyConfig(KeyConfig, _APIParam, _WebDavKeyParams):
+    """A configuration for WebDav-like keys."""
 
 
 @dataclass
@@ -358,13 +457,7 @@ class Process:
             else:
                 keystore = self.output.name
 
-            inputs["outputs"] = {
-                "output": {
-                    "format": {
-                        "schema": f"keystore://{keystore}"
-                    }
-                }
-            }
+            inputs["outputs"] = {"output": {"format": {"schema": f"keystore://{keystore}"}}}
 
         return inputs
 
@@ -398,4 +491,7 @@ class JobRunner:
             status = self.job.status
 
         for result in self.job.results:
-            result.download(download_dir)
+            try:
+                result.download(download_dir)
+            except NotDownloadableError:
+                logger.info(result.title)

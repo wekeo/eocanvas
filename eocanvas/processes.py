@@ -8,14 +8,14 @@ from .snap.graph import Graph
 
 
 @dataclass
-class SnapParams:
+class _SnapParams:
     snap_graph: Graph
     eo_input: List[Input] = field(default_factory=list)
     eo_config: List[Config] = field(default_factory=list)
 
 
 @dataclass
-class SnapProcess(Process, SnapParams):
+class SnapProcess(Process, _SnapParams):
     def __post_init__(self):
         super().__post_init__()
         if self.process_id is None:
@@ -39,13 +39,13 @@ class SnapProcess(Process, SnapParams):
 
 
 @dataclass
-class DataTailorParams:
+class _DataTailorParams:
     epct_chain: Chain
     epct_input: List[Input] = field(default_factory=list)
 
 
 @dataclass
-class DataTailorProcess(Process, DataTailorParams):
+class DataTailorProcess(Process, _DataTailorParams):
     def __post_init__(self):
         super().__post_init__()
         if self.process_id is None:
