@@ -394,7 +394,6 @@ class KeyConfig:
 
 @dataclass
 class _S3KeyParams:
-
     secret_key: str
     access_key: str
     bucket: str
@@ -408,7 +407,6 @@ class _S3KeyParams:
 
 @dataclass
 class _WebDavKeyParams:
-
     endpoint: str
     username: str
     password: str
