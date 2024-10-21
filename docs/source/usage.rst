@@ -9,6 +9,11 @@ A *process* describes either a SNAP or a Data Tailor computation.
 A *job*, on the other hand, is a submission of a process to the API, and it's used to keep track of
 its state, to retrieve the application logs and, finally, to download the results.
 
+    .. note::
+        Users are not limited to use their local hard-drive to download the results, nor the HDA as source of data.
+        Look at the :doc:`external storage </external>` page to learn more about it.
+
+
 To interact directly with the API, you can use the :class:`eocanvas.API` class:
 
 .. code-block:: python

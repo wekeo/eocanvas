@@ -50,5 +50,7 @@ Data Tailor
     # The url is a valid WEkEO download URL. It can be retrieved using the HDA Python client
     inputs = Input(key="img1", url="http://gateway.impl.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
 
-    # This will submit the process to the API, wait for its completion and download the results
     process = DataTailorProcess(epct_chain=chain, epct_input=inputs)
+
+    # This will submit the process to the API, wait for its completion and download the results
+    process.run()

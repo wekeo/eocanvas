@@ -315,7 +315,9 @@ class LogEntry:
 
 @dataclass
 class Key:
-    """A key object as returned by the API"""
+    """A key object as returned by the API.
+    Keys are used to configure external storages such as S3, EODATA and WEkEO Drive.
+    """
 
     name: str
     type_: Optional[str] = None

@@ -17,6 +17,7 @@ Requirements
 - pyyaml
 - lxml
 - attrs
+- cryptography
 
 Contribution
 ------------
@@ -39,6 +40,7 @@ Contents
    installation
    quickstart
    usage
+   external
    api
    changelog
 
