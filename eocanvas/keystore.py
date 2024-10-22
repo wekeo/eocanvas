@@ -12,7 +12,7 @@ def encrypt_data(data, public_key):
     encrypted = public_key.encrypt(
         data,
         padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None
+            mgf=padding.MGF1(algorithm=hashes.SHA1()), algorithm=hashes.SHA1(), label=None
         ),
     )
     return encrypted
