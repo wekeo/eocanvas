@@ -52,3 +52,6 @@ Data Tailor
 
     # This will submit the process to the API, wait for its completion and download the results
     process = DataTailorProcess(epct_chain=chain, epct_input=inputs)
+
+    # This will submit the process to the API, wait for its completion and download the results
+    process.run()
