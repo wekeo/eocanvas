@@ -388,8 +388,7 @@ class KeyConfig:
         return {f.name: getattr(self, f.name) for f in fields(self) if f.name != "api"}
 
     def encode(self) -> str:
-        public_key = load_public_key(self.api.get_public_key())
-        encrypted = encrypt_data(json.dumps(self.asdict()).encode(), public_key)
+        encrypted = encrypt_data(json.dumps(self.asdict()).encode(), self.api.get_public_key())
         encoded = base64.b64encode(encrypted).decode("utf-8")
         return encoded
 
