@@ -13,7 +13,7 @@ from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
 from .exceptions import JobFailed, NotDownloadableError, UnknownResultTypeError
 from .http import delete, get, post
-from .keystore import encrypt_data, load_public_key
+from .keystore import encrypt_data
 from .logging import logger
 from .utils import Singleton
 
