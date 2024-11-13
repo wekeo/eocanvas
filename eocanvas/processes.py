@@ -42,6 +42,7 @@ class SnapProcess(Process, _SnapParams):
 class _DataTailorParams:
     epct_chain: Chain
     epct_input: List[Input] = field(default_factory=list)
+    epct_config: List[Config] = field(default_factory=list)
 
 
 @dataclass
@@ -51,6 +52,9 @@ class DataTailorProcess(Process, _DataTailorParams):
         if self.process_id is None:
             self.process_id = "dataTailor"
 
+        if not isinstance(self.epct_config, list):
+            self.epct_config = [self.epct_config]
+
         if not isinstance(self.epct_input, list):
             self.epct_input = [self.epct_input]
 
@@ -59,6 +63,7 @@ class DataTailorProcess(Process, _DataTailorParams):
         inputs["inputs"] = {
             "epct_chain": self.epct_chain.b64encode(),
             "epct_input": json.dumps([i.asdict() for i in self.epct_input]),
+            "epct_config": json.dumps([c.asdict() for c in self.epct_config]),
         }
 
         return inputs
