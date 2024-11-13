@@ -193,10 +193,13 @@ class Input:
 
 @dataclass
 class ConfigOption:
-    uncompress: bool
     sub_path: str
+    uncompress: Optional[bool] = None
 
     def asdict(self):
+        if self.uncompress is None:
+            return {"subPath": self.sub_path}
+
         return {"uncompress": self.uncompress, "subPath": self.sub_path}
 
 
