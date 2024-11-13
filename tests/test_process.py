@@ -1,4 +1,4 @@
-from eocanvas.api import Input, Key, Process
+from eocanvas.api import Config, ConfigOption, Input, Key, Process
 from eocanvas.datatailor import Chain
 from eocanvas.processes import DataTailorProcess
 
@@ -76,6 +76,23 @@ def test_data_tailor_prepare_inputs_with_input_key_and_output_key():
             "epct_input": '[{"k": "v", "schema": "keystore://input_key"}]',
         },
         "outputs": {"output": {"format": {"schema": "keystore://output_key"}}},
+        "response": "raw",
+        "subscriber": None,
+    }
+
+
+def test_data_tailor_prepare_inputs_with_input_key_and_config():
+    chain = Chain()
+    input_ = Input(key="k", url="v", keystore=Key(name="input_key"))
+    config = Config(key="k", options=ConfigOption(sub_path="/"))
+    process = DataTailorProcess(epct_chain=chain, epct_input=input_, epct_config=config)
+    assert process.prepare_inputs() == {
+        "inputs": {
+            "epct_chain": "e30K",
+            "epct_input": '[{"k": "v", "schema": "keystore://input_key"}]',
+            "epct_config": '[{"k": {"subPath": "/"}}]',
+        },
+        "outputs": {},
         "response": "raw",
         "subscriber": None,
     }
