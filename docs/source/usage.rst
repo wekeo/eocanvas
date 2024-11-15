@@ -196,4 +196,21 @@ Once all inputs are set, you'd call a `DataTailorProcess` just as SNAP:
     process.run()
 
 
-Note that Data Tailor process does not accept a configuration object.
+Data Tailor accepts a configuration paramater as well, similarly to SNAP.
+Please refer to the :class:`eocanvas.processes.DataTailorProcess` class.
+
+
+Shear Water
+-----------
+Shearwater is a simple demo process to show how other systems can be integrated into the API.
+The interface is quite simple, as it only accepts three parameters.
+
+Keep in mind that, at the moment, **Sindian** is the only valid value for the *area* parameter-
+
+.. code:: python
+
+    from eocanvas.processes import ShearWaterProcess
+
+    # No need to setup the input through other objects
+    process = ShearWaterProcess(area="Sindian", start_day="2021-01-01", end_day="2021-01-02")
+    process.run()

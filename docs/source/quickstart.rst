@@ -5,7 +5,8 @@ EO Canvas allows you to submit functions to the WEkEO infrastructure and downloa
 
 Namely, you can request an `ESA SNAP toolbox <https://step.esa.int/main/toolboxes/snap/>`_ or
 an `EUMETSAT Data Tailor <https://user.eumetsat.int/resources/user-guides/data-tailor-standalone-guide>`_
-processing.
+processing. There is also a `Shearwater Demo <https://www.shearwatergeo.com/>`_ service
+that shows how other systems can be integrated into the API.
 
 EO Canvas offers high-level objects to interact with the API, but you can also use the endpoints directly.
 This is described more in depth in the  :doc:`usage </usage>` page.
@@ -53,4 +54,14 @@ Data Tailor
     process = DataTailorProcess(epct_chain=chain, epct_input=inputs)
 
     # This will submit the process to the API, wait for its completion and download the results
+    process.run()
+
+Shear Water
+-----------
+.. code:: python
+
+    from eocanvas.processes import ShearWaterProcess
+
+    # No need to setup the input through other objects
+    process = ShearWaterProcess(area="Sindian", start_day="2021-01-01", end_day="2021-01-02")
     process.run()

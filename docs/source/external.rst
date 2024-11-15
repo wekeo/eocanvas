@@ -14,7 +14,7 @@ The API supports the following storage locations:
 
 The following table clarifies if a storage location can be used for inputs, outputs or both:
 
-.. list-table:: Title
+.. list-table::
    :widths: 50 25 25
    :header-rows: 1
 
@@ -37,9 +37,19 @@ The following table clarifies if a storage location can be used for inputs, outp
 Configuration examples
 ----------------------
 
-With the exception of EODATA keys, which is already present by default, a user can register keys by creating an instance
+With the exception of the EODATA key, which is already present by default, a user can register keys by creating an instance
 of the :class:`eocanvas.api.Key` class in combination with either :class:`eocanvas.api.S3KeyConfig` or :class:`eocanvas.api.WebDavKeyConfig`.
 All the information will be encrypted using an RSA public key provided by the Serverless API and only decrypted when needed by the functions.
+
+.. note::
+  Keys' configuration are encrypted before being sent to the server. To do that, the openssl command must be available on your system.
+  On Linux, you can simply use your package manager:
+
+      sudo apt-get install openssl
+
+  On Windows, you can follow `this guide <https://thesecmaster.com/blog/procedure-to-install-openssl-on-the-windows-platform>`_, or, if
+  you already have Git installed, the executable should be in C:\\Program Files\\Git\\usr\\bin\\openssl.exe
+
 
 S3
 **
@@ -91,7 +101,7 @@ Similarly to S3, you need to pass the information in a config object, in this ca
 Usage
 -----
 
-Once a key has been added to the store, it can be used as an input source or an output destination, either by using it as an object or just by the name.
+Once a key has been added to the store, it can be used as an input source or an output destination, based on the table above, either by using it as an object or just by the name.
 
 Here is an example using a WEkEO Drive key as input:
 
