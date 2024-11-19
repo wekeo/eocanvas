@@ -1,6 +1,10 @@
 Changelog
 =========
 
+Version 0.2.1
+-------------
+- Fixed results download
+
 Version 0.2.0
 -------------
 - Added Keystore management
