@@ -300,14 +300,12 @@ class Result:
     rel: str = "result"
 
     def download(self, download_dir: Optional[str] = None):
-        if self.rel == "result":
-            return self.api.download_result(self, download_dir)
-        elif self.rel == "enclosure":
+        if self.title.startswith("keystore"):
             raise NotDownloadableError(
                 "External reference to the result, not served by this service."
             )
         else:
-            raise UnknownResultTypeError(f"rel {self.rel} not known")
+            return self.api.download_result(self, download_dir)
 
 
 @dataclass
