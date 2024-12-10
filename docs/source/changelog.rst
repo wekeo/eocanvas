@@ -1,6 +1,10 @@
 Changelog
 =========
 
+Version 0.2.3
+-------------
+- Downloads can now be deferred
+
 Version 0.2.2
 -------------
 - Updated version
