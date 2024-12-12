@@ -144,5 +144,9 @@ class HTTPOAuth2(AuthBase):
         self.token = token
 
     def __call__(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
-        request.headers["authorization"] = f"Bearer {self.token}"
+        request.headers.update(self.header)
         return request
+
+    @property
+    def header(self) -> dict:
+        return {"authorization": f"Bearer {self.token}"}
