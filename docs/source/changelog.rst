@@ -1,6 +1,18 @@
 Changelog
 =========
 
+Version 0.2.3
+-------------
+- Downloads can now be deferred
+
+Version 0.2.2
+-------------
+- Updated version
+
+Version 0.2.1
+-------------
+- Fixed results download
+
 Version 0.2.0
 -------------
 - Added Keystore management

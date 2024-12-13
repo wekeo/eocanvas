@@ -148,6 +148,19 @@ By default, results are downloaded in the current directory. A different one can
 
     process.run(dowload_dir="mydir")
 
+You can choose not to download the results instead. Just pass a flag to the process:
+
+.. code-block:: python
+
+    process.run(dowload=False)
+
+In this case, the results can be downloaded at a later stage through the API:
+
+.. code-block:: python
+
+    for result in job.results:
+        result.download()
+
 
 Data Tailor
 -----------
@@ -202,7 +215,7 @@ Please refer to the :class:`eocanvas.processes.DataTailorProcess` class.
 
 Shear Water
 -----------
-Shearwater is a simple demo process to show how other systems can be integrated into the API.
+Shearwater is a simple demo process based on a user application to show how other systems or user needs can be integrated into the API, such as AI models.
 The interface is quite simple, as it only accepts three parameters.
 
 Keep in mind that, at the moment, **Sindian** is the only valid value for the *area* parameter-

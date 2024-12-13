@@ -175,8 +175,7 @@ class API(metaclass=Singleton):
             download_dir = "."
 
         os.makedirs(download_dir, exist_ok=True)
-        url = self.urls.get("download", result_href=result.href)
-        response = get(url, auth=self.auth, stream=True)
+        response = get(result.full_url, auth=self.auth, stream=True)
         filename = result.title.split("/")[-1]
         download_path = os.path.join(download_dir, filename)
         logger.info(f"Downloading {download_path}")
@@ -298,6 +297,10 @@ class Result:
     href: str
     title: str
     rel: str = "result"
+
+    @property
+    def full_url(self) -> str:
+        return self.api.urls.get("download", result_href=self.href)
 
     def download(self, download_dir: Optional[str] = None):
         if self.title.startswith("keystore"):
@@ -464,15 +467,18 @@ class Process:
     def submit(self) -> Job:
         return self.api.exec_process(self)
 
-    def run(self, job: Optional[Job] = None, download_dir: Optional[str] = None):
+    def run(
+        self, job: Optional[Job] = None, download_dir: Optional[str] = None, download: bool = True
+    ):
         if job is None:
             job = self.submit()
-        return JobRunner(job).run(download_dir)
+        return JobRunner(job, download).run(download_dir)
 
 
 class JobRunner:
-    def __init__(self, job: Job):
+    def __init__(self, job: Job, download: bool = True):
         self.job = job
+        self.download = download
 
     def run(self, download_dir: Optional[str] = None):
         sleep = 10
@@ -490,8 +496,9 @@ class JobRunner:
             self.job.refresh_from_api()
             status = self.job.status
 
-        for result in self.job.results:
-            try:
-                result.download(download_dir)
-            except NotDownloadableError:
-                logger.info(result.title)
+        if self.download:
+            for result in self.job.results:
+                try:
+                    result.download(download_dir)
+                except NotDownloadableError:
+                    logger.info(result.title)
