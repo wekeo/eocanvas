@@ -168,7 +168,25 @@ class API(metaclass=Singleton):
 
         url = self.urls.get("job_results", job_id=job_id)
         response = get(url, auth=self.auth)
-        return [self._build_result(data) for data in response.json()]
+        results = response.json()
+
+        # If the results are paginated, on the first page the last item is the link
+        # to the next one. In that case, we follow it.
+        next_page = results[-1]
+        while next_page["title"] == "next-page":
+            results.pop()
+            response = get(self.urls.base_url + next_page["href"], auth=self.auth)
+            paginated_results = response.json()
+            next_page = paginated_results[-1]
+            # From the second page on, the last item is the link to the previous page
+            # and the second last the link to the next, if any
+            if next_page["title"] == "prev-page":
+                next_page = paginated_results[-2]
+                results.extend(paginated_results[:-1])
+            else:
+                results.extend(paginated_results)
+
+        return [self._build_result(data) for data in results]
 
     def download_result(self, result: Result, download_dir: Optional[str] = None):
         if download_dir is None:
