@@ -59,3 +59,7 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
 html_baseurl = "https://eocanvas.readthedocs.io/en/latest/"
+
+sitemap_url_scheme = "{version}{link}"
+
+html_extra_path = ["_static/robots.txt"]
