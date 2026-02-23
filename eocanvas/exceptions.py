@@ -2,6 +2,10 @@ class EOCanvasError(Exception):
     """Base class for EO Canvas exceptions."""
 
 
+class APINotInitializedError(EOCanvasError):
+    """APIs are triggered but not initialized."""
+
+
 class CredentialsError(EOCanvasError):
     """Generic error regarding the credentials."""
 

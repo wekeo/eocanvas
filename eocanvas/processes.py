@@ -107,3 +107,5 @@ class ShearWaterProcess(Process, ShearWaterParams):
             "startDay": self.start_day,
             "endDay": self.end_day,
         }
+
+        return inputs

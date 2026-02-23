@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import time
+from typing import Optional
 from urllib.parse import urljoin
 
 import requests
@@ -72,12 +73,12 @@ class OAuthToken:
         self.url = url
         self.credentials = credentials
         self.verify_ssl = verify_ssl
-        self._access_token = None
-        self._refresh_token = None
-        self._expiration_time = None
+        self._access_token: Optional[str] = None
+        self._refresh_token: Optional[str] = None
+        self._expiration_time: Optional[int] = None
 
     def __str__(self) -> str:
-        return self.access_token
+        return self.access_token or ""
 
     @property
     def is_expired(self) -> bool:
@@ -85,7 +86,7 @@ class OAuthToken:
         return self._expiration_time is None or now > self._expiration_time
 
     @property
-    def access_token(self) -> str:
+    def access_token(self) -> Optional[str]:
         """The access token to the API.
 
         :return: A valid OAuth Access Token.

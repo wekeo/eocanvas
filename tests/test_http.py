@@ -34,4 +34,4 @@ def test_request_calls(monkeypatch):
 
 def test_get_with_retries():
     with pytest.raises(HTTPError):
-        get("https://httpstat.us/500")
+        get("https://500.returnco.de/whatever")
