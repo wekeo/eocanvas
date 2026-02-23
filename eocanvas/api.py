@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
-from .exceptions import JobFailed, NotDownloadableError
+from .exceptions import APINotInitializedError, JobFailed, NotDownloadableError
 from .http import delete, get, post
 from .keystore import encrypt_data
 from .logging import logger
@@ -372,12 +372,14 @@ class Key:
                 "expire": self.expire_seconds or 3600,
                 "public": self.public,
                 "description": self.description or self.name,
-                "data": self.config.encode(),
+                "data": self.config and self.config.encode() or None,
             }
         }
         return data
 
     def create(self) -> Key:
+        assert self.api is not None, "API not initialized."
+
         if self.config is None:
             raise ValueError("Cannot create a key without config")
 
@@ -483,6 +485,8 @@ class Process:
         return inputs
 
     def submit(self) -> Job:
+        if self.api is None:
+            raise APINotInitializedError("API not initialized")
         return self.api.exec_process(self)
 
     def run(
@@ -499,7 +503,7 @@ class JobRunner:
         self.download = download
 
     def run(self, download_dir: Optional[str] = None):
-        sleep = 10
+        sleep = 10.0
         status = self.job.status
         while status != "successful":
             now = datetime.now().isoformat()
