@@ -10,7 +10,6 @@ def test_prepare_inputs_with_no_outputs():
         "inputs": {},
         "outputs": {},
         "response": "raw",
-        "subscriber": None,
     }
 
 
@@ -21,7 +20,6 @@ def test_prepare_inputs_with_str_outputs():
         "inputs": {},
         "outputs": {"output": {"format": {"schema": "keystore://key"}}},
         "response": "raw",
-        "subscriber": None,
     }
 
 
@@ -32,7 +30,6 @@ def test_prepare_inputs_with_key_outputs():
         "inputs": {},
         "outputs": {"output": {"format": {"schema": "keystore://key"}}},
         "response": "raw",
-        "subscriber": None,
     }
 
 
@@ -62,7 +59,6 @@ def test_data_tailor_prepare_inputs_with_input_key():
         },
         "outputs": {},
         "response": "raw",
-        "subscriber": None,
     }
 
 
@@ -77,7 +73,6 @@ def test_data_tailor_prepare_inputs_with_input_key_and_output_key():
         },
         "outputs": {"output": {"format": {"schema": "keystore://output_key"}}},
         "response": "raw",
-        "subscriber": None,
     }
 
 
@@ -94,5 +89,4 @@ def test_data_tailor_prepare_inputs_with_input_key_and_config():
         },
         "outputs": {},
         "response": "raw",
-        "subscriber": None,
     }

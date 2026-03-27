@@ -4,10 +4,12 @@ import base64
 import json
 import os
 import time
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from datetime import datetime
 from logging import INFO
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Protocol, Union
+
+import requests
 
 from .auth import Credentials, HTTPOAuth2, OAuthToken
 from .config import URLs
@@ -17,16 +19,25 @@ from .keystore import encrypt_data
 from .logging import logger
 from .utils import Singleton
 
+# -----------------------------------------------------
+# Utils
+# -----------------------------------------------------
 
-def transform_data(input_dict, mapping):
+
+def transform_data(input_dict: Dict, mapping: Dict) -> Dict:
     """Remaps the dictionary keys according to the mapping."""
     return {mapping.get(k, k): v for k, v in input_dict.items()}
 
 
-def filter_dict_for_dataclass(data_class, input_dict):
+def filter_dict_for_dataclass(data_class: Any, input_dict: Dict) -> Dict:
     """Discards dictionary keys that don't match with any dataclass field."""
     data_class_fields = {f.name for f in fields(data_class)}
     return {k: v for k, v in input_dict.items() if k in data_class_fields}
+
+
+# -----------------------------------------------------
+# API
+# -----------------------------------------------------
 
 
 class API(metaclass=Singleton):
@@ -56,52 +67,99 @@ class API(metaclass=Singleton):
 
         self.urls = urls
         self.auth = HTTPOAuth2(token)
+        self._builder = Builder(self)
 
-    def get_public_key(self) -> str:
+    def get_public_key(self) -> str | Any:
         url = self.urls.get("key_detail", key_id="cert/public")
         response = get(url, auth=self.auth)
         return response.content
 
+    def landing_page(self) -> LandingPage:
+        """Returns the standard OGC Landing Page."""
+        url = self.urls.get("landing_page")
+        response = get(url, auth=self.auth)
+        return self._builder.build_landing_page(response.json())
+
+    def get_api(self) -> Dict:
+        """Gets the current API definition as a dictionary."""
+        url = self.urls.get("api")
+        response = get(url, auth=self.auth)
+        return response.json()
+
+    def get_conformance(self) -> Dict:
+        """Gets the OGC conformance list."""
+        url = self.urls.get("conformance")
+        response = get(url, auth=self.auth)
+        return response.json()
+
     def get_key(self, key_id: str) -> Key:
+        """Gets the detail of a key.
+
+        Args:
+            key_id (str): The ID of the key.
+
+        Returns:
+            A :class:`eocanvas.api.Key` instance.
+        """
         url = self.urls.get("key_detail", key_id=key_id)
         response = get(url, auth=self.auth)
-        return self._build_key(response.json())
+        return self._builder.build_key(response.json())
 
     def get_keys(self) -> List[Key]:
+        """Gets the list of available keys.
+
+        Returns:
+            A list of :class:`eocanvas.api.Key` instances.
+        """
         url = self.urls.get("key_list")
         response = get(url, auth=self.auth)
-        return [self._build_key(data) for data in response.json()]
+        return [self._builder.build_key(data) for data in response.json()]
 
     def create_key(self, key: Key) -> Key:
+        """Creates a new Key object.
+
+        Args:
+            key (Key): The Key to be saved on the backend.
+
+        Returns:
+            Key: The newly created Key
+        """
         url = self.urls.get("key_list")
         post(url, json=key.asdict(), auth=self.auth)
         # The API response is empty. We return the key itself.
         return key
 
     def delete_key(self, key_id: str) -> None:
+        """Deletes a Key.
+
+        Args:
+            key_id (str): The ID of the key.
+        """
         url = self.urls.get("key_detail", key_id=key_id)
         delete(url, auth=self.auth)
 
     def get_process(self, process_id: str) -> Process:
         """Gets the details of a process.
 
+        Args:
+            process_id (str): The ID of the process.
+
         Returns:
             A :class:`eocanvas.api.Process` instance.
         """
         url = self.urls.get("process_detail", process_id=process_id)
         response = get(url, auth=self.auth)
-        return self._build_process(response.json())
+        return self._builder.build_process(response.json())
 
     def get_processes(self) -> List[Process]:
         """Gets the list of available processes.
-        There should be only SNAP and Datatailor functions.
 
         Returns:
             A list of :class:`eocanvas.api.Process` instances.
         """
         url = self.urls.get("process_list")
-        response = get(url, auth=self.auth)
-        return [self._build_process(data) for data in response.json()]
+        paginator = Paginator(get, url, "processes")
+        return [self._builder.build_process(data) for data in paginator.run(auth=self.auth)]
 
     def exec_process(self, process: Process) -> Job:
         """Submits a process to the API.
@@ -112,7 +170,7 @@ class API(metaclass=Singleton):
         inputs = process.prepare_inputs()
         url = self.urls.get("process_execution", process_id=process.process_id)
         response = post(url, json=inputs, auth=self.auth)
-        return self._build_job(response.json())
+        return self._builder.build_job(response.json())
 
     def get_job(self, job_id) -> Job:
         """Gets the details of a job.
@@ -122,7 +180,7 @@ class API(metaclass=Singleton):
         """
         url = self.urls.get("job_detail", job_id=job_id)
         response = get(url, auth=self.auth)
-        return self._build_job(response.json())
+        return self._builder.build_job(response.json())
 
     def get_jobs(self) -> List[Job]:
         """Gets the list of user submitted jobs.
@@ -131,8 +189,8 @@ class API(metaclass=Singleton):
             A list of :class:`eocanvas.api.Job` instances.
         """
         url = self.urls.get("job_list")
-        response = get(url, auth=self.auth)
-        return [self._build_job(data) for data in response.json()["jobs"]]
+        paginator = Paginator(get, url, "jobs")
+        return [self._builder.build_job(data) for data in paginator.run(auth=self.auth)]
 
     def get_job_logs(self, job: Union[Job, str]) -> List[LogEntry]:
         """Gets the log entries for a job.
@@ -150,7 +208,7 @@ class API(metaclass=Singleton):
 
         url = self.urls.get("job_logs", job_id=job_id)
         response = get(url, auth=self.auth)
-        return [self._build_log_entry(data) for data in response.json()]
+        return [self._builder.build_log_entry(data) for data in response.json()]
 
     def get_job_results(self, job: Union[Job, str]) -> List[Result]:
         """Gets the results for a job.
@@ -186,7 +244,7 @@ class API(metaclass=Singleton):
             else:
                 results.extend(paginated_results)
 
-        return [self._build_result(data) for data in results]
+        return [self._builder.build_result(data) for data in results]
 
     def download_result(self, result: Result, download_dir: Optional[str] = None):
         if download_dir is None:
@@ -202,7 +260,19 @@ class API(metaclass=Singleton):
                 if chunk:
                     f.write(chunk)
 
-    def _build_key(self, data) -> Key:
+
+# -----------------------------------------------------
+# Builder
+# -----------------------------------------------------
+
+
+class Builder:
+    """A container for methods that builds EOCanvas models instances from dictionaries."""
+
+    def __init__(self, api: API):
+        self.api = api
+
+    def build_key(self, data) -> Key:
         mapping = {
             "creationDate": "creation_date",
             "expirationDate": "expiration_date",
@@ -210,32 +280,69 @@ class API(metaclass=Singleton):
             "type": "type_",
         }
         data = filter_dict_for_dataclass(Key, transform_data(data, mapping))
-        data["api"] = self
+        data["api"] = self.api
         return Key(**data)
 
-    def _build_process(self, data) -> Process:
-        mapping = {"processId": "process_id"}
+    def build_link(self, data) -> Link:
+        mapping = {"type": "type_"}
+        data = filter_dict_for_dataclass(Link, transform_data(data, mapping))
+        return Link(**data)
+
+    def build_process(self, data) -> Process:
+        mapping = {"id": "process_id"}
         data = filter_dict_for_dataclass(Process, transform_data(data, mapping))
-        data["api"] = self
+        data["api"] = self.api
+        if "links" in data and data["links"]:
+            data["links"] = [self.build_link(link) for link in data["links"]]
         return Process(**data)
 
-    def _build_job(self, data) -> Job:
+    def build_job(self, data) -> Job:
         mapping = {"jobID": "job_id"}
         data = filter_dict_for_dataclass(Job, transform_data(data, mapping))
-        data["api"] = self
+        data["api"] = self.api
+        if "links" in data and data["links"]:
+            data["links"] = [self.build_link(link) for link in data["links"]]
         return Job(**data)
 
-    def _build_result(self, data) -> Result:
+    def build_landing_page(self, data) -> LandingPage:
+        data = filter_dict_for_dataclass(LandingPage, data)
+        if "links" in data and data["links"]:
+            data["links"] = [self.build_link(link) for link in data["links"]]
+        return LandingPage(**data)
+
+    def build_result(self, data) -> Result:
         data = filter_dict_for_dataclass(Result, data)
-        data["api"] = self
+        data["api"] = self.api
         return Result(**data)
 
-    def _build_log_entry(self, data) -> LogEntry:
+    def build_log_entry(self, data) -> LogEntry:
         data = filter_dict_for_dataclass(LogEntry, data)
         # Truncate the nanoseconds to microseconds for compatibility with datetime
         data["timestamp"] = data["timestamp"][:26] + data["timestamp"][-6:]
         data["timestamp"] = datetime.fromisoformat(data["timestamp"])
         return LogEntry(**data)
+
+
+# -----------------------------------------------------
+# Models
+# -----------------------------------------------------
+
+
+@dataclass
+class Link:
+    """A link as represented by the API."""
+
+    href: str
+    rel: str
+    type_: str
+    title: Optional[str] = None
+
+
+@dataclass
+class LandingPage:
+    title: str
+    description: str
+    links: List[Link]
 
 
 @dataclass
@@ -287,6 +394,7 @@ class Job:
     created: Optional[str] = None
     updated: Optional[str] = None
     finished: Optional[str] = None
+    links: Optional[list[Link]] = field(default_factory=list)
 
     def refresh_from_api(self):
         """Reloads the job attributes from the API."""
@@ -298,7 +406,7 @@ class Job:
 
     @property
     def completed(self) -> bool:
-        return self.status == "completed"
+        return self.status == "successful"
 
     @property
     def logs(self) -> List[LogEntry]:
@@ -318,7 +426,7 @@ class Result:
 
     @property
     def full_url(self) -> str:
-        return self.api.urls.get("download", result_href=self.href)
+        return self.href
 
     def download(self, download_dir: Optional[str] = None):
         if self.title.startswith("keystore"):
@@ -408,13 +516,18 @@ class _APIParam:
 class KeyConfig:
     """A configuration object that encrypt either an S3 or a WEBDAV key"""
 
-    def asdict(self):
+    if TYPE_CHECKING:
+        api: Optional[API] = None
+
+    def asdict(self: Any):
         return {f.name: getattr(self, f.name) for f in fields(self) if f.name != "api"}
 
-    def encode(self) -> str:
-        encrypted = encrypt_data(json.dumps(self.asdict()).encode(), self.api.get_public_key())
-        encoded = base64.b64encode(encrypted).decode("utf-8")
-        return encoded
+    def encode(self) -> Optional[str]:
+        if self.api is not None:
+            encrypted = encrypt_data(json.dumps(self.asdict()).encode(), self.api.get_public_key())
+            encoded = base64.b64encode(encrypted).decode("utf-8")
+            return encoded
+        return None
 
 
 @dataclass
@@ -461,7 +574,10 @@ class Process:
     title: Optional[str] = None
     description: Optional[str] = None
     inputs: Optional[Any] = None
+    keywords: Optional[Any] = None
+    metadata: Optional[Any] = None
     output: Optional[Union[str, Key]] = None
+    links: Optional[list[Link]] = field(default_factory=list)
 
     def __post_init__(self):
         if self.api is None:
@@ -472,7 +588,6 @@ class Process:
             "inputs": {},  # To be defined in subclasses
             "outputs": {},
             "response": "raw",
-            "subscriber": None,
         }
         if self.output is not None:
             if isinstance(self.output, str):
@@ -524,3 +639,82 @@ class JobRunner:
                     result.download(download_dir)
                 except NotDownloadableError:
                     logger.info(result.title)
+
+
+class GetCallable(Protocol):
+    """A simple protocol to mimic the http.get method interface."""
+
+    def __call__(self, url: str, **kwargs: Any) -> requests.Response: ...
+
+
+class Paginator:
+    """A class that implements standard OGC pagination mechanism."""
+
+    def __init__(
+        self,
+        get_func: GetCallable,
+        start_url: str,
+        results_key: str,
+        limit: int = 10,
+        initial_offset: int = 0,
+    ):
+        """Initialize a Paginator instance.
+        A paginator can then be iterated over by calling its run method.
+
+        Args:
+            get_func (GetCallable): Usually the http.get function
+            start_url (str): The URL of the first page
+            results_key (str): The key of the response where the results are
+            limit (int, optional): How many results per request. Defaults to 10.
+            initial_offset (int, optional): The offset of the results from the beginning. Defaults to 0.
+        """
+        self.get_func = get_func
+        self.current_url: Optional[str] = start_url
+        self.results_key = results_key
+        self.limit = limit
+        self.initial_offset = initial_offset
+
+    def _get_next_url(self, data: Dict[str, Any]) -> Optional[str]:
+        """Get the next URL from the response or None if it is not
+        set or if the results list is empty.
+
+        Args:
+            data (Dict[str, Any]): The JSON response
+
+        Returns:
+            Optional[str]: Either the next URL or None
+        """
+        # The API might send a next link even when the items are exhausted
+        if not len(data.get(self.results_key, [])):
+            return None
+
+        links = data.get("links", [])
+        for link in links:
+            if link.get("rel") == "next":
+                return link.get("href")
+        return None
+
+    def run(self, **kwargs: Any) -> Generator[Dict[str, Any], None, None]:
+        """Iterate over the paginator until it is fully consumed.
+
+        Yields:
+            Generator[Dict[str, Any], None, None]: The JSON objects representing the results.
+        """
+        params = kwargs.pop("params", {})
+        if self.limit is not None:
+            params["limit"] = self.limit
+        if self.initial_offset is not None:
+            params["offset"] = self.initial_offset
+
+        first_run = True
+        while self.current_url:
+            current_params = params if first_run else None
+            response = self.get_func(self.current_url, params=current_params, **kwargs)
+            data = response.json()
+            # Yield data from the current page
+            items = data.get(self.results_key, [])
+            for item in items:
+                yield item
+
+            self.current_url = self._get_next_url(data)
+            first_run = False

@@ -1,106 +1,113 @@
-from unittest.mock import patch
+from typing import Any
+from unittest.mock import Mock, patch
 
 import pytest
 import responses
 
 from eocanvas import API
-from eocanvas.api import Job, JobRunner, Key, Process, S3KeyConfig, WebDavKeyConfig
+from eocanvas.api import Job, JobRunner, Key, Paginator, Process, S3KeyConfig, WebDavKeyConfig
 from eocanvas.auth import Credentials
 from eocanvas.config import URLs
 from eocanvas.exceptions import JobFailed
 from eocanvas.processes import SnapProcess
 from eocanvas.snap.graph import Graph
 
-PROCESSES_RESPONSE = [
-    {
-        "processId": "snap-function",
-        "version": "v0.11",
-        "title": "snap-function",
-        "description": "Function based on the ESA SNAP tool version 10.",
-        "inputs": {
-            "eo_config": {
-                "title": "Configuration for eo_input",
-                "description": "Configuration for the eo_input in JSON format. They instruct the function on how to deal with the eo_input (e.g., uncompress).",  # noqa: E501
-                "minOccurs": 0,
-                "maxOccurs": 1,
-                "schema": {"$ref": "https://string"},
-            },
-            "snap_graph": {
-                "title": "ESA SNAP GPT graph",
-                "description": "A base64-encoded gpt graph. It should contain placeholders referring to the eo_input field.",  # noqa: E501
-                "minOccurs": 0,
-                "maxOccurs": 1,
-                "schema": {"$ref": "https://string"},
-            },
-            "eo_input": {
-                "title": "eo_inputs Title",
-                "description": "Named inputs provided to the ESA SNAP tool in JSON encoding. They should match the placeholders in the SNAP's GPT graph.",  # noqa: E501
-                "minOccurs": 0,
-                "maxOccurs": 1,
-                "schema": {"$ref": "http://named_inputs"},
-            },
+PROCESSES_RESPONSE = {
+    "processes": [
+        {
+            "title": "snap",
+            "description": "Function based on the ESA SNAP tool version 10.",
+            "id": "snap-function",
+            "version": "10.0.0",
+            "jobControlOptions": ["async-execute"],
+            "outputTransmission": ["value"],
+            "links": [
+                {
+                    "href": "https://gateway.impl.wekeo2.eu/serverless/snap-function",
+                    "rel": "self",
+                    "type": "application/json",
+                    "title": "Process description",
+                },
+                {
+                    "href": "https://gateway.impl.wekeo2.eu/serverless/snap-function/execution",
+                    "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+                    "type": "application/json",
+                    "title": "Execute endpoint",
+                },
+            ],
         },
-        "outputs": {
-            "output": {
-                "title": "SNAP output",
-                "description": "A set of artifacts produced by the ESA SNAP Tool.",
-                "schema": {"$ref": "https://string"},
-            }
+        {
+            "title": "EUMETSAT Data Tailor",
+            "description": "The EUMETSAT Data Tailor provides format conversion.",
+            "id": "dataTailor",
+            "version": "3.4.0",
+            "jobControlOptions": ["async-execute"],
+            "outputTransmission": ["value"],
+            "links": [
+                {
+                    "href": "https://gateway.impl.wekeo2.eu/serverless/dataTailor",
+                    "rel": "self",
+                    "type": "application/json",
+                    "title": "Process description",
+                },
+                {
+                    "href": "https://gateway.impl.wekeo2.eu/serverless/dataTailor/execution",
+                    "rel": "http://www.opengis.net/def/rel/ogc/1.0/execute",
+                    "type": "application/json",
+                    "title": "Execute endpoint",
+                },
+            ],
         },
-    },
-    {
-        "processId": "dataTailor",
-        "version": "v1.3",
-        "title": "EUMETSAT Data Tailor",
-        "description": "The EUMETSAT Data Tailor provides format conversion and basic product customisation capabilities for a set of EUMETSAT products in native formats.",  # noqa: E501
-        "inputs": {
-            "epct_input": {
-                "title": "eo_inputs Title",
-                "description": "Named inputs provided to the EUMETSAT Data Tailor tool in JSON encoding.",  # noqa: E501
-                "minOccurs": 0,
-                "maxOccurs": 1,
-                "schema": {"$ref": "http://named_inputs"},
-            },
-            "epct_chain": {
-                "title": "EUMETSAT Data Tailor chain file",
-                "description": "Customisation file describing the chain of customisation to apply to the epct_input files.",  # noqa: E501
-                "minOccurs": 0,
-                "maxOccurs": 1,
-                "schema": {"$ref": "https://string"},
-            },
-        },
-        "outputs": {
-            "output": {
-                "title": "Data Tailor output",
-                "description": "A set of artifacts produced by the EUMETSAT Data Tailor Tool.",
-                "schema": {"$ref": "https://string"},
-            }
-        },
-    },
-]
+    ],
+    "links": [],
+}
 
 
 JOBS_RESPONSE = {
     "jobs": [
         {
+            "jobID": "1237bb85-3f19-5786-8cc0-1582bb45903a",
             "processID": "snap-function",
             "type": "process",
-            "jobID": "93fc7efb-4860-5de1-bd75-ca850685bed4",
             "status": "failed",
-            "created": "2024-08-01:13.23.46",
-            "started": "2024-08-01:13.23.46",
-            "finished": "2024-08-01T13:24:08Z",
-            "updated": "2024-08-01T13:24:08.592105096Z",
+            "created": "2026-03-05T16:07:08Z",
+            "started": "2026-03-05T16:07:08Z",
+            "finished": "2026-03-05T16:07:46Z",
+            "updated": "2026-03-05T16:07:46Z",
+            "links": [
+                {
+                    "href": "https://example.com/serverless/jobs/1237bb85",
+                    "rel": "self",
+                    "type": "application/json",
+                },
+                {
+                    "href": "https://example.com/serverless/jobs/1237bb85",
+                    "rel": "monitor",
+                    "type": "application/json",
+                },
+            ],
         },
         {
+            "jobID": "93fc7efb-4860-5de1-bd75-ca850685bed5",
             "processID": "snap-function",
             "type": "process",
-            "jobID": "93fc7efb-4860-5de1-bd75-ca850685bed5",
             "status": "successful",
-            "created": "2024-08-01:13.23.46",
-            "started": "2024-08-01:13.23.46",
-            "finished": "2024-08-01T13:24:08Z",
-            "updated": "2024-08-01T13:24:08.592105096Z",
+            "created": "2026-03-05T16:07:08Z",
+            "started": "2026-03-05T16:07:08Z",
+            "finished": "2026-03-05T16:07:46Z",
+            "updated": "2026-03-05T16:07:46Z",
+            "links": [
+                {
+                    "href": "https://example.com/serverless/jobs/1237bb85",
+                    "rel": "self",
+                    "type": "application/json",
+                },
+                {
+                    "href": "https://example.com/serverless/jobs/1237bb85",
+                    "rel": "monitor",
+                    "type": "application/json",
+                },
+            ],
         },
     ],
     "links": [],
@@ -109,15 +116,15 @@ JOBS_RESPONSE = {
 
 JOBS_RESULTS_RESPONSE = [
     {
-        "href": "/download/result/1",
+        "href": "https://example.com/download/result/1",
         "title": "title1",
     },
     {
-        "href": "/download/result/2",
+        "href": "https://example.com/download/result/2",
         "title": "title2",
     },
     {
-        "href": "/download/result/3",
+        "href": "https://example.com/download/result/3",
         "title": "title3",
     },
 ]
@@ -223,7 +230,7 @@ def test_get_processes(mock_api, mock_credentials):
     api = API()
     processes = api.get_processes()
     assert len(processes) == 2
-    assert processes[0].title == "snap-function"
+    assert processes[0].title == "snap"
     assert processes[1].title == "EUMETSAT Data Tailor"
 
 
@@ -231,14 +238,15 @@ def test_get_process(mock_api):
     urls = URLs()
     mock_api.add(
         responses.GET,
-        url=urls.get("process_detail", process_id=PROCESSES_RESPONSE[0]["processId"]),
-        json=PROCESSES_RESPONSE[0],
+        url=urls.get("process_detail", process_id=PROCESSES_RESPONSE["processes"][0]["id"]),
+        json=PROCESSES_RESPONSE["processes"][0],
         status=200,
     )
 
     api = API()
-    process = api.get_process(PROCESSES_RESPONSE[0]["processId"])
-    assert process.title == "snap-function"
+    process = api.get_process(PROCESSES_RESPONSE["processes"][0]["id"])
+    assert process.title == "snap"
+    assert process.links[0].title == "Process description"
 
 
 def test_exec_process(mock_api):
@@ -254,7 +262,7 @@ def test_exec_process(mock_api):
             "status": "accepted",
             "started": "2024-08-01:13.23.46",
         },
-        status=200,
+        status=201,
     )
 
     api = API()
@@ -285,6 +293,7 @@ def test_get_job(mock_api):
     api = API()
     job = api.get_job(job_id=JOBS_RESPONSE["jobs"][0]["jobID"])
     assert job.job_id == JOBS_RESPONSE["jobs"][0]["jobID"]
+    assert job.links[0].href == "https://example.com/serverless/jobs/1237bb85"
 
 
 def test_get_job_results(mock_api):
@@ -314,7 +323,7 @@ def test_job_results(mock_api):
     job = Job(
         api=API(),
         job_id=JOBS_RESPONSE["jobs"][0]["jobID"],
-        status="completed",
+        status="successful",
         started="2013",
     )
     assert len(job.results) == 3
@@ -348,7 +357,7 @@ def test_job_logs(mock_api):
     job = Job(
         api=API(),
         job_id=JOBS_RESPONSE["jobs"][0]["jobID"],
-        status="completed",
+        status="successful",
         started="2013",
     )
     assert len(job.logs) == 3
@@ -387,7 +396,7 @@ def test_job_runner(mock_api, tmp_path):
     for result in JOBS_RESULTS_RESPONSE:
         mock_api.add(
             responses.GET,
-            url=urls.get("download", result_href=result["href"]),
+            url=result["href"],
             status=200,
         )
 
@@ -426,7 +435,7 @@ def test_process_run(mock_api, tmp_path):
     for result in JOBS_RESULTS_RESPONSE:
         mock_api.add(
             responses.GET,
-            url=urls.get("download", result_href=result["href"]),
+            url=result["href"],
             status=200,
         )
 
@@ -576,3 +585,50 @@ def test_create_webdav_key_from_api(mock_api):
 def test_invalid_key_type():
     with pytest.raises(ValueError):
         Key(name="test", type_="test")
+
+
+def test_paginator_yields_all_items_across_pages():
+    page1_data = {
+        "processes": [{"id": "p1"}, {"id": "p2"}],
+        "links": [{"rel": "next", "href": "https://api.example.org/processes?offset=2"}],
+    }
+    page2_data = {
+        "processes": [{"id": "p3"}],
+        "links": [{"rel": "prev", "href": "https://api.example.org/processes?offset=0"}],
+    }
+
+    def mock_get(url: str, params: Any = None, **kwargs: Any) -> Mock:
+        response = Mock()
+        if "offset=2" in url or (params and params.get("offset") == 2):
+            response.json.return_value = page2_data
+        else:
+            response.json.return_value = page1_data
+
+        response.raise_for_status = Mock()
+        return response
+
+    paginator = Paginator(
+        get_func=mock_get,
+        start_url="https://api.example.org/processes",
+        results_key="processes",
+        limit=2,
+    )
+
+    results = list(paginator.run())
+
+    assert len(results) == 3
+    assert results[0]["id"] == "p1"
+    assert results[1]["id"] == "p2"
+    assert results[2]["id"] == "p3"
+
+
+def test_paginator_handles_empty_results():
+    def mock_get_empty(url: str, **kwargs: Any) -> Mock:
+        response = Mock()
+        response.json.return_value = {"processes": [], "links": []}
+        return response
+
+    paginator = Paginator(mock_get_empty, "https://api.url", "processes")
+    results = list(paginator.run())
+
+    assert results == []
