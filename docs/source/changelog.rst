@@ -1,6 +1,10 @@
 Changelog
 =========
 
+version 2.0.0
+-------------
+- Compliance with Serverless Functions 2.0
+
 Version 0.2.4
 -------------
 - Compliance with the new pagination API
