@@ -666,7 +666,7 @@ class Paginator:
             start_url (str): The URL of the first page
             results_key (str): The key of the response where the results are
             limit (int, optional): How many results per request. Defaults to 10.
-            initial_offset (int, optional): The offset of the results from the beginning. Defaults to 0.
+            initial_offset (int, optional): The first offset of the results. Defaults to 0.
         """
         self.get_func = get_func
         self.current_url: Optional[str] = start_url
