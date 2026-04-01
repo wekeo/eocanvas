@@ -5,6 +5,7 @@ Most of the code has been taken from the official EUMDAC library
 Changes have been made to the Chain class to create instances from a yaml file and
 to encode it to base64 representation as required by the API.
 """
+
 import sys
 from base64 import b64encode
 from collections.abc import Mapping
