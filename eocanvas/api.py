@@ -644,7 +644,8 @@ class JobRunner:
 class GetCallable(Protocol):
     """A simple protocol to mimic the http.get method interface."""
 
-    def __call__(self, url: str, **kwargs: Any) -> requests.Response: ...
+    def __call__(self, url: str, **kwargs: Any) -> requests.Response:
+        ...
 
 
 class Paginator:
