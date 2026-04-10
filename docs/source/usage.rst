@@ -195,7 +195,7 @@ The inputs can be set similarly to SNAP
 
 .. code-block:: python
 
-    inputs = Input(key="img1", url="http://gateway.impl.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
+    inputs = Input(key="img1", url="http://gateway.prod.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
 
 Again, the url can be retrieved through the HDA Client as explained above.
 Once all inputs are set, you'd call a `DataTailorProcess` just as SNAP:

@@ -49,7 +49,7 @@ Data Tailor
     chain = Chain.from_file("olci_resample.yaml")
 
     # The url is a valid WEkEO download URL. It can be retrieved using the HDA Python client
-    inputs = Input(key="img1", url="http://gateway.impl.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
+    inputs = Input(key="img1", url="http://gateway.prod.wekeo2.eu/hda-broker/api/v1/dataaccess/download/66c357dcb6a632e1f39b3131")
 
     process = DataTailorProcess(epct_chain=chain, epct_input=inputs)
 
