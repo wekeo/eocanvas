@@ -1,6 +1,10 @@
 Changelog
 =========
 
+version 2.0.1
+-------------
+- Fixed base URL
+
 version 2.0.0
 -------------
 - Compliance with Serverless Functions 2.0
